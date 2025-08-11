@@ -119,7 +119,7 @@
 }
 
 .tna-heartbeats {
-  height: 3rem;
+  height: 2rem;
   margin-top: spacing.space(1);
   padding-top: spacing.space(1.25);
 
@@ -137,6 +137,7 @@
     top: 0;
 
     line-height: 1;
+    line-height: 1cap;
   }
 
   &::before {
@@ -181,13 +182,13 @@
       @include colour.blue-accent;
     }
 
-    &:hover {
-      @include colour.colour-outline("base-keyline-dark", 2px);
+    // &:hover {
+    //   @include colour.colour-outline("base-keyline-dark", 2px);
 
-      height: 3rem;
+    //   height: 3rem;
 
-      z-index: 2;
-    }
+    //   z-index: 2;
+    // }
   }
 
   @include media.on-mobile {

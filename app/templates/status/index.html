@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{%- from 'components/warning/macro.html' import tnaWarning -%}
+
+{%- set pageTitle = 'Service status' -%}
+
+{% block content %}
+<div class="tna-section tna-container">
+  <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
+    <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+    <p>Page last generated on <strong><time>{{ now_pretty() }}</time></strong>.</p>
+    {%- if data.incident %}
+      {%- set incident %}
+      <h3 class="tna-heading-m">{{ data.incident.title }}</h3>
+      {{ data.incident.content | markdown | safe }}
+      {%- endset %}
+      {{ tnaWarning({
+        'headingLevel': 2,
+        'body': incident,
+        'classes': 'tna-!--margin-bottom-m'
+      }) }}
+    {%- endif %}
+  </div>
+  
+  <div class="tna-column tna-column--full tna-!--margin-vertical-l">
+    <h2 class="tna-heading-l">Summary</h2>
+    <div class="tna-monitor-summary-wrapper tna-!--margin-top-s">
+      {%- for group in data.publicGroupList %}
+      {%- for item in group.monitorList %}
+      {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
+      <div class="tna-monitor-summary {{ item_data.accent_colour }}">
+        <div class="tna-monitor-summary__icon">
+          <i class="fa-solid fa-fw {{ item_data.fontawesome_icon }}" aria-hidden="true"></i>
+        </div>
+        <div class="tna-monitor-summary__content">
+          <h3 class="tna-heading-s tna-heading--no-link-arrow">
+            <a href="#service-{{ item.name | slugify }}">{{ item.name }}</a>
+          </h3>
+          <p class="tna-!--no-margin-top">{{ item_data.title }}</p>
+        </div>
+      </div>
+      {%- endfor %}
+      {%- endfor %}
+    </div>
+  </div>
+
+  <div class="tna-column tna-column--full">
+    {%- for item in data.maintenanceList %}
+    <!-- TODO -->
+    {%- endfor %}
+    
+    {%- for group in data.publicGroupList %}
+    <h2 class="tna-heading-l">{{ group.name }}</h2>
+    <hr class="tna-!--margin-top-s">
+    {%- for item in group.monitorList %}
+    <div id="service-{{ item.name | slugify }}" class="tna-monitor">
+      {%- set item_heartbeats = heartbeats.heartbeatList[item.id | string] %}
+      {%- set most_recent_item_heartbeat = item_heartbeats | last %}
+      {%- set most_recent_item_heartbeat_data = most_recent_item_heartbeat.status | pretty_uptime_kuma_status %}
+      {%- set show_n_heartbeats_on_mobile = (item_heartbeats | length) / 2 %}
+      <h3 class="tna-heading-m">
+        {%- if item.url %}
+        <a href="{{ item.url }}">{{ item.name }}</a>
+        {%- else %}
+        {{ item.name }}
+        {%- endif %}
+      </h3>
+      <p class="tna-!--margin-top-xs">
+        <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
+      </p>
+      <p class="tna-!--margin-top-xs">Last updated: {{ (item_heartbeats | last).time }} UTC</p>
+      <div class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[(show_n_heartbeats_on_mobile + 1) | int]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
+        {%- for heartbeat in item_heartbeats %}
+        {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
+        <p class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat.status }}{{- ' tna-heartbeats__item--hide-on-mobile' if loop.index < show_n_heartbeats_on_mobile else '' -}}" title="{{ heartbeat.time }} UTC: {{ heartbeat_item_data.title }}">
+          <time>{{ heartbeat.time }}</time> UTC: {{ heartbeat_item_data.title }}
+        </p>
+        {%- endfor %}
+      </div>
+      {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
+      {%- if item_last_24h_uptime %}
+      <p class="tna-!--no-margin-top">
+        <small>{{ item.name }} uptime over the last 24 hours: <strong>{{ (item_last_24h_uptime * 100) | round | int }}%</strong></small>
+      </p>
+      {%- endif %}
+    </div>
+    {%- endfor %}
+    {%- endfor %}
+  </div>
+</div>
+{% endblock %}

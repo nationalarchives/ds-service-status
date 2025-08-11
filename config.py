@@ -61,6 +61,11 @@ class Base:
 
     GA4_ID: str = os.environ.get("GA4_ID", "")
 
+    UPTIME_KUMA_API_URL: str = os.environ.get("UPTIME_KUMA_API_URL", "").rstrip("/")
+    UPTIME_KUMA_STATUS_PAGE_SLUG: str = os.environ.get(
+        "UPTIME_KUMA_STATUS_PAGE_SLUG", ""
+    )
+
 
 class Production(Base, Features):
     pass

@@ -11,6 +11,12 @@ def now_iso_8601():
     return now_date
 
 
+def now_pretty():
+    now = datetime.now()
+    now_date = now.strftime("%-d %B %Y, %H:%M:%S UTC")
+    return now_date
+
+
 def cookie_preference(policy):
     if "cookies_policy" in request.cookies:
         cookies_policy = request.cookies["cookies_policy"]

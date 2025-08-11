@@ -1,1 +1,192 @@
+@use "@nationalarchives/frontend/nationalarchives/variables/a11y" as
+  a11yVariables;
+@use "@nationalarchives/frontend/nationalarchives/variables/borders" as
+  borderVars;
+@use "@nationalarchives/frontend/nationalarchives/tools/a11y";
+@use "@nationalarchives/frontend/nationalarchives/tools/borders";
+@use "@nationalarchives/frontend/nationalarchives/tools/colour";
+@use "@nationalarchives/frontend/nationalarchives/tools/media";
+@use "@nationalarchives/frontend/nationalarchives/tools/spacing";
+@use "@nationalarchives/frontend/nationalarchives/tools/typography";
+
 @use "@nationalarchives/frontend/nationalarchives/all";
+
+.tna-monitor-summary-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: spacing.space(0.5);
+
+  @include media.on-medium {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include media.on-mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tna-monitor-summary {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+
+  position: relative;
+
+  &__icon {
+    @include colour.accent;
+    @include typography.font-size(32);
+
+    width: 4rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: borderVars.$rounded-border-radius 0 0
+      borderVars.$rounded-border-radius;
+  }
+
+  &__content {
+    flex: 1;
+
+    padding: spacing.space(0.5) spacing.space(1);
+    @include colour.colour-border("keyline", 1px);
+    border-left: none;
+
+    border-radius: 0 borderVars.$rounded-border-radius
+      borderVars.$rounded-border-radius 0;
+
+    p {
+      @include typography.font-size(16);
+      line-height: 1.5;
+    }
+  }
+
+  .tna-heading-s a {
+    &::before {
+      @include borders.rounded-border;
+
+      content: "";
+
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+    }
+
+    &:hover {
+      &::before {
+        @include colour.colour-border(
+          "accent-background",
+          a11yVariables.$focus-outline-width
+        );
+      }
+    }
+
+    &:focus-visible,
+    &:active {
+      outline: none;
+
+      &::before {
+        @include a11y.focus-outline;
+      }
+    }
+
+    &:active {
+      &::before {
+        @include a11y.active-outline;
+      }
+    }
+  }
+}
+
+.tna-monitor {
+  @include colour.colour-border("keyline", 1px, solid, bottom);
+
+  padding-top: spacing.space(1.5);
+  padding-bottom: spacing.space(1.5);
+}
+
+.tna-heartbeats {
+  height: 3rem;
+  margin-top: spacing.space(1);
+  padding-top: spacing.space(1.25);
+
+  display: flex;
+  align-items: center;
+  gap: 1px;
+
+  position: relative;
+
+  &::before,
+  &::after {
+    @include typography.font-size(16);
+
+    position: absolute;
+    top: 0;
+
+    line-height: 1;
+  }
+
+  &::before {
+    content: attr(data-oldest-heartbeat);
+
+    left: 0;
+  }
+
+  &::after {
+    content: "Now";
+    // content: attr(data-newest-heartbeat);
+
+    right: 0;
+  }
+
+  &__item {
+    @include colour.accent;
+    @include borders.rounded-border;
+
+    height: 2rem;
+    margin: 0;
+
+    position: relative;
+    z-index: 1;
+
+    font-size: 0;
+    flex: 1;
+
+    &--status-0 {
+      @include colour.pink-accent;
+    }
+
+    &--status-1 {
+      @include colour.green-accent;
+    }
+
+    &--status-2 {
+      @include colour.yellow-accent;
+    }
+
+    &--status-3 {
+      @include colour.blue-accent;
+    }
+
+    &:hover {
+      @include colour.colour-outline("base-keyline-dark", 2px);
+
+      height: 3rem;
+
+      z-index: 2;
+    }
+  }
+
+  @include media.on-mobile {
+    &::before {
+      content: attr(data-oldest-heartbeat-mobile);
+    }
+
+    &__item {
+      &--hide-on-mobile {
+        display: none;
+      }
+    }
+  }
+}

@@ -5,7 +5,6 @@
 {%- from 'components/header/macro.html' import tnaHeader -%}
 
 {%- set theme = request.cookies.get('theme') or 'system' -%}
-{%- set themeAccent = themeAccent if themeAccent else 'yellow' -%}
 {%- set htmlAttributes = {
   'data-ga4id': app_config.GA4_ID or '',
   'data-tna-cookies-domain': app_config.COOKIE_DOMAIN or ''
@@ -51,7 +50,7 @@
 {% if 'cookie_preferences_set' not in request.cookies or not request.cookies.get('cookie_preferences_set') %}
 {{ tnaCookieBanner({
   'serviceName': 'The National Archives',
-  'cookiesUrl': url_for('main.cookies'),
+  'cookiesUrl': '/legal/cookies/',
   'cookiesDomain': app_config.COOKIE_DOMAIN
 }) | indent(6) }}
 {% endif %}
@@ -60,8 +59,8 @@
 {% block header %}
 {{ tnaHeader({
   'logo': {
-    'href': url_for('main.index'),
-    'title': 'Service home page'
+    'href': '/',
+    'title': 'The National Archives home page'
   }
 }) | indent(6) }}
 {% endblock %}

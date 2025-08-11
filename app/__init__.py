@@ -1,15 +1,20 @@
 import logging
 
 from app.lib.cache import cache
-from app.lib.context_processor import cookie_preference, now_iso_8601
+from app.lib.context_processor import cookie_preference, now_iso_8601, now_pretty
 from app.lib.talisman import talisman
-from app.lib.template_filters import slugify
+from app.lib.template_filters import (
+    markdown,
+    pretty_uptime_kuma_status,
+    slugify,
+    time_ago,
+)
 from flask import Flask
 from jinja2 import ChoiceLoader, PackageLoader
 
 
 def create_app(config_class):
-    app = Flask(__name__, static_url_path="/static")
+    app = Flask(__name__, static_url_path="/status/static")
     app.config.from_object(config_class)
 
     gunicorn_error_logger = logging.getLogger("gunicorn.error")
@@ -75,13 +80,17 @@ def create_app(config_class):
         ]
     )
 
+    app.add_template_filter(markdown)
+    app.add_template_filter(pretty_uptime_kuma_status)
     app.add_template_filter(slugify)
+    app.add_template_filter(time_ago)
 
     @app.context_processor
     def context_processor():
         return dict(
             cookie_preference=cookie_preference,
             now_iso_8601=now_iso_8601,
+            now_pretty=now_pretty,
             app_config={
                 "ENVIRONMENT_NAME": app.config.get("ENVIRONMENT_NAME"),
                 "TNA_FRONTEND_VERSION": app.config.get("TNA_FRONTEND_VERSION"),
@@ -94,8 +103,10 @@ def create_app(config_class):
 
     from .healthcheck import bp as healthcheck_bp
     from .main import bp as site_bp
+    from .status import bp as status_bp
 
     app.register_blueprint(site_bp)
     app.register_blueprint(healthcheck_bp, url_prefix="/healthcheck")
+    app.register_blueprint(status_bp, url_prefix="/status")
 
     return app

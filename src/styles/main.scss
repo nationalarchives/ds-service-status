@@ -14,7 +14,7 @@
 .tna-monitor-summary-wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: spacing.space(0.5);
+  gap: spacing.space(1);
 
   @include media.on-medium {
     grid-template-columns: repeat(2, 1fr);
@@ -22,6 +22,7 @@
 
   @include media.on-mobile {
     grid-template-columns: 1fr;
+    gap: spacing.space(0.5);
   }
 }
 
@@ -48,11 +49,10 @@
 
   &__content {
     @include colour.accent-light;
-    @include colour.colour-border("keyline", 1px);
 
     flex: 1;
 
-    padding: spacing.space(0.5) spacing.space(1);
+    padding: spacing.space(0.75) spacing.space(1);
     border-left: none;
 
     border-radius: 0 borderVars.$rounded-border-radius

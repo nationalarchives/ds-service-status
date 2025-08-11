@@ -21,6 +21,9 @@
         'classes': 'tna-!--margin-bottom-m'
       }) }}
     {%- endif %}
+    {%- if data.config.description %}
+    {{ data.config.description | markdown | safe }}
+    {%- endif %}
   </div>
   
   <div class="tna-column tna-column--full tna-!--margin-vertical-l">

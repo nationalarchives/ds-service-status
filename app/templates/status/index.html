@@ -18,14 +18,18 @@
       {%- set incident %}
       <h3 class="tna-heading-m">{{ data.incident.title }}</h3>
       {{ data.incident.content | markdown | safe }}
-      <p>
-        <small>Created: <time datetime="{{ data.incident.createdDate }}Z">{{ data.incident.createdDate | pretty_date }} (UTC)</time></small>
-      </p>
-      {%- if data.incident.lastUpdatedDate %}
-      <p>
-        <small>Last updated: <time datetime="{{ data.incident.lastUpdatedDate }}Z">{{ data.incident.lastUpdatedDate | pretty_date }} (UTC)</time></small>
-      </p>
-      {%- endif %}
+      <dl class="tna-dl tna-dl--plain tna-dl--tiny tna-!--margin-top-s">
+        <dt>Incident raised</dt>
+        <dd>
+          <time datetime="{{ data.incident.createdDate }}Z">{{ data.incident.createdDate | pretty_date }} (UTC)</time>
+        </dd>
+        {%- if data.incident.lastUpdatedDate %}
+        <dt>Last updated</dt>
+        <dd>
+          <time datetime="{{ data.incident.lastUpdatedDate }}Z">{{ data.incident.lastUpdatedDate | pretty_date }} (UTC)</time>
+        </dd>
+        {%- endif %}
+      </dl>
       {%- endset %}
 
       {{ tnaWarning({
@@ -62,10 +66,10 @@
 
   {%- if data.maintenanceList %}
   <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
-    <h2 class="tna-heading-l">Planned maintenance</h2>
+    <h2 class="tna-heading-l" id="planned-maintenance">Planned maintenance</h2>
     {%- for item in data.maintenanceList %}
-    <div class="tna-aside tna-aside--tight tna-!--margin-top-s tna-accent-blue tna-background-accent-light">
-      <h3 class="tna-heading-m">{{ item.title }}</h3>
+    <div class="tna-aside tna-!--margin-top-s tna-accent-blue tna-background-accent-light">
+      <h3 class="tna-heading-m" id="group-{{ item.title | slugify }}">{{ item.title }}</h3>
       {{ item.description | markdown | safe }}
       {%- if (item.timeslotList | length) == 1 %}
       <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslot</h4>
@@ -105,7 +109,6 @@
       <p class="tna-!--margin-top-xs">
         <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
       </p>
-      <p class="tna-!--margin-top-xs">Last updated: <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time }} (UTC)</time></p>
       <div class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[(show_n_heartbeats_on_mobile + 1) | int]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
         {%- for heartbeat in item_heartbeats %}
         {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
@@ -114,12 +117,17 @@
         </p>
         {%- endfor %}
       </div>
-      {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
-      {%- if item_last_24h_uptime %}
-      <p class="tna-!--margin-top-s">
-        <small>Uptime over the last 24 hours: <strong>{{ (item_last_24h_uptime * 100) | round | int }}%</strong></small>
-      </p>
-      {%- endif %}
+      <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
+        <dt>Last updated</dt>
+        <dd>
+          <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time }} (UTC)</time>
+        </dd>
+        {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
+        {%- if item_last_24h_uptime %}
+        <dt>Uptime over the last 24 hours</dt>
+        <dd>{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
+        {%- endif %}
+      </dl>
     </div>
     {%- endfor %}
     {%- endfor %}

@@ -15,8 +15,14 @@
   p {
     margin-top: spacing.space(0.5);
   }
+}
 
-  small {
+.tna-dl {
+  &--small {
+    @include typography.font-size(16);
+  }
+
+  &--tiny {
     @include typography.font-size(14);
   }
 }

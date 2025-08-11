@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{%- from 'components/button/macro.html' import tnaButton -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
 
 {%- set pageTitle = 'Service status' -%}
@@ -23,8 +24,7 @@
   </div>
   
   <div class="tna-column tna-column--full tna-!--margin-vertical-l">
-    <h2 class="tna-heading-l">Summary</h2>
-    <div class="tna-monitor-summary-wrapper tna-!--margin-top-s">
+    <div class="tna-monitor-summary-wrapper">
       {%- for group in data.publicGroupList %}
       {%- for item in group.monitorList %}
       {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
@@ -33,9 +33,9 @@
           <i class="fa-solid fa-fw {{ item_data.fontawesome_icon }}" aria-hidden="true"></i>
         </div>
         <div class="tna-monitor-summary__content">
-          <h3 class="tna-heading-s tna-heading--no-link-arrow">
+          <h2 class="tna-heading-s tna-heading--no-link-arrow">
             <a href="#service-{{ item.name | slugify }}">{{ item.name }}</a>
-          </h3>
+          </h2>
           <p class="tna-!--no-margin-top">{{ item_data.title }}</p>
         </div>
       </div>
@@ -86,6 +86,16 @@
     </div>
     {%- endfor %}
     {%- endfor %}
+    
+    <div class="tna-button-group">
+      {{ tnaButton({
+        'text': 'Back to top',
+        'href': '#top',
+        'icon': 'arrow-up',
+        'small': True,
+        'plain': True
+      }) }}
+    </div>
   </div>
 </div>
 {% endblock %}

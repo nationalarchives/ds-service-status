@@ -94,4 +94,3 @@ jobs:
           COMMIT_MESSAGE_HEADER=$(git log -1 --pretty=%B | head -n 1)
           git commit -m "Update service status to v${{ needs.build.outputs.version }}" -m "${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
           git push origin proof-of-concept
-

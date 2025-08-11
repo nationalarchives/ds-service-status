@@ -8,7 +8,7 @@ class Features:
     pass
 
 
-class Base:
+class Production(Features):
     BUILD_VERSION: str = os.environ.get("BUILD_VERSION", "")
     TNA_FRONTEND_VERSION: str = ""
     try:
@@ -54,7 +54,7 @@ class Base:
     PREFERRED_URL_SCHEME: str = os.getenv("PREFERRED_URL_SCHEME", "https")
 
     CACHE_TYPE: str = "FileSystemCache"
-    CACHE_DEFAULT_TIMEOUT: int = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "900"))
+    CACHE_DEFAULT_TIMEOUT: int = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "15"))
     CACHE_IGNORE_ERRORS: bool = True
     CACHE_DIR: str = os.environ.get("CACHE_DIR", "/tmp")
     CACHE_REDIS_URL: str = os.environ.get("CACHE_REDIS_URL", "")
@@ -67,19 +67,15 @@ class Base:
     )
 
 
-class Production(Base, Features):
+class Staging(Production):
     pass
 
 
-class Staging(Base, Features):
-    CACHE_DEFAULT_TIMEOUT: int = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "60"))
-
-
-class Develop(Base, Features):
+class Develop(Production):
     CACHE_DEFAULT_TIMEOUT: int = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "1"))
 
 
-class Test(Base, Features):
+class Test(Production):
     ENVIRONMENT_NAME: str = "test"
 
     SECRET_KEY: str = "abc123"

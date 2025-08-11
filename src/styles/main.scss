@@ -11,6 +11,16 @@
 
 @use "@nationalarchives/frontend/nationalarchives/all";
 
+.tna-warning {
+  p {
+    margin-top: spacing.space(0.5);
+  }
+
+  small {
+    @include typography.font-size(14);
+  }
+}
+
 .tna-monitor-summary-wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

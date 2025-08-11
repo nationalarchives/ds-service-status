@@ -5,10 +5,9 @@
 {%- from 'components/header/macro.html' import tnaHeader -%}
 
 {%- set theme = request.cookies.get('theme') or 'system' -%}
-{%- set htmlAttributes = {
-  'data-ga4id': app_config.GA4_ID or '',
+{%- set htmlAttributes = dict((htmlAttributes or {}), **{
   'data-tna-cookies-domain': app_config.COOKIE_DOMAIN or ''
-} -%}
+}) -%}
 
 {% block headIcons %}
     <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{{ url_for('static', filename='assets/images/favicon.ico') }}" type="image/x-icon">

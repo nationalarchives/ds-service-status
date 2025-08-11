@@ -98,7 +98,6 @@ def create_app(config_class):
                 "TNA_FRONTEND_VERSION": app.config.get("TNA_FRONTEND_VERSION"),
                 "BUILD_VERSION": app.config.get("BUILD_VERSION"),
                 "COOKIE_DOMAIN": app.config.get("COOKIE_DOMAIN"),
-                "GA4_ID": app.config.get("GA4_ID"),
             },
             feature={},
         )

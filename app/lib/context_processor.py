@@ -13,7 +13,7 @@ def now_iso_8601():
 
 def now_pretty():
     now = datetime.now()
-    now_date = now.strftime("%-d %B %Y, %H:%M:%S UTC")
+    now_date = now.strftime("%-d %B %Y, %H:%M:%S")
     return now_date
 
 

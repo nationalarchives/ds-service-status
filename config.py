@@ -59,8 +59,6 @@ class Production(Features):
     CACHE_DIR: str = os.environ.get("CACHE_DIR", "/tmp")
     CACHE_REDIS_URL: str = os.environ.get("CACHE_REDIS_URL", "")
 
-    GA4_ID: str = os.environ.get("GA4_ID", "")
-
     UPTIME_KUMA_API_URL: str = os.environ.get("UPTIME_KUMA_API_URL", "").rstrip("/")
     UPTIME_KUMA_STATUS_PAGE_SLUG: str = os.environ.get(
         "UPTIME_KUMA_STATUS_PAGE_SLUG", ""

@@ -22,6 +22,17 @@ def markdown(s):
     return md.render(s)
 
 
+def pretty_date(s):
+    """Convert a date string to a human-readable format."""
+    if not s:
+        return ""
+    try:
+        dt = datetime.datetime.fromisoformat(s)
+        return dt.strftime("%-d %B %Y, %H:%M:%S")
+    except ValueError:
+        return s
+
+
 def pretty_uptime_kuma_status(s):
     if s == 0:
         return {
@@ -61,7 +72,7 @@ def relative_time(date):
 
     def formatn(n, s):
         """Add "s" if it's plural"""
-        int_n = int(n)
+        int_n = int(round(n))
         if int_n == 1:
             return "1 %s" % s
         return "%d %ss" % (int_n, s)

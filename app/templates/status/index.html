@@ -48,9 +48,28 @@
   </div>
 
   <div class="tna-column tna-column--full">
+    {%- if data.maintenanceList %}
+    <h2 class="tna-heading-l">Planned maintenance</h2>
     {%- for item in data.maintenanceList %}
-    <!-- TODO -->
+    <div class="tna-aside tna-aside--tight tna-!--margin-top-s tna-accent-blue tna-background-accent-light">
+      <h3 class="tna-heading-m">{{ item.title }}</h3>
+      {{ item.description | markdown | safe }}
+      {%- if (item.timeslotList | length) == 1 %}
+      <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslot</h4>
+      <p>From <strong><time>{{ item.timeslotList[0].startDate | pretty_date }} {{ item.timezone }}</time></strong> to <strong><time>{{ item.timeslotList[0].endDate | pretty_date }} {{ item.timezone }}</time></strong></p>
+      {%- elif (item.timeslotList | length) > 1 %}
+      <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslots</h4>
+      <ul class="tna-ul">
+        {%- for timeslot in item.timeslotList %}
+        <li>
+          From <strong><time>{{ timeslot.startDate | pretty_date }} {{ item.timezone }}</time></strong> to <strong><time>{{ timeslot.endDate | pretty_date }} {{ item.timezone }}</time></strong>
+        </li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
     {%- endfor %}
+    {%- endif %}
     
     {%- for group in data.publicGroupList %}
     <h2 class="tna-heading-l">{{ group.name }}</h2>

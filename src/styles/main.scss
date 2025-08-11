@@ -47,10 +47,12 @@
   }
 
   &__content {
+    @include colour.accent-light;
+    @include colour.colour-border("keyline", 1px);
+
     flex: 1;
 
     padding: spacing.space(0.5) spacing.space(1);
-    @include colour.colour-border("keyline", 1px);
     border-left: none;
 
     border-radius: 0 borderVars.$rounded-border-radius

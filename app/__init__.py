@@ -5,6 +5,7 @@ from app.lib.context_processor import cookie_preference, now_iso_8601, now_prett
 from app.lib.talisman import talisman
 from app.lib.template_filters import (
     markdown,
+    pretty_date,
     pretty_uptime_kuma_status,
     slugify,
     time_ago,
@@ -81,6 +82,7 @@ def create_app(config_class):
     )
 
     app.add_template_filter(markdown)
+    app.add_template_filter(pretty_date)
     app.add_template_filter(pretty_uptime_kuma_status)
     app.add_template_filter(slugify)
     app.add_template_filter(time_ago)

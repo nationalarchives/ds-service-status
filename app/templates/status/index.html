@@ -11,7 +11,7 @@
 } -%}
 #}
 
-{%- set pageTitle = 'Service status' -%}
+{%- set pageTitle = data.config.title or 'Service status' -%}
 
 {% block head %}
 {{ super() }}

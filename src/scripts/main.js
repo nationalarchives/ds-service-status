@@ -57,21 +57,22 @@ const $refreshTime = document.querySelector(
 );
 
 const updateRefreshTimer = (refreshTime) => {
+  const $ariaLiveEl = document.getElementById("aria-live-refresh");
   const secondsDifference = Math.round(
     (refreshTime.getTime() - new Date().getTime()) / 1000,
   );
-  if (secondsDifference === 10) {
-    const $ariaLiveEl = document.getElementById("aria-live-refresh");
-    if ($ariaLiveEl) {
-      $ariaLiveEl.textContent =
-        "This page will automatically refresh in 10 seconds.";
+  if ($ariaLiveEl) {
+    if (secondsDifference === 10) {
+      $ariaLiveEl.textContent = `This page will automatically refresh in ${secondsDifference} seconds.`;
+    } else if (secondsDifference === 3) {
+      $ariaLiveEl.textContent = `Page refreshing in ${secondsDifference} seconds…`;
     }
   }
   if (secondsDifference <= 0) {
-    $refreshTimer.textContent = "Page refreshing now...";
+    $refreshTimer.textContent = "Refreshing page now…";
     window.location.reload();
   } else {
-    $refreshTimer.textContent = `Refreshing ${rtf1.format(secondsDifference, "second")}...`;
+    $refreshTimer.textContent = `Refreshing ${rtf1.format(secondsDifference, "second")}…`;
   }
 };
 

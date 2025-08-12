@@ -33,7 +33,6 @@ $refresh-banner-height: 2.5rem;
 
   &__content {
     @include typography.font-size(16);
-    @include typography.main-font-weight-medium;
 
     height: $refresh-banner-height;
 
@@ -41,8 +40,8 @@ $refresh-banner-height: 2.5rem;
     top: 0;
     pointer-events: all;
 
-    @include media.on-tiny {
-      @include typography.font-size(14);
+    p {
+      @include typography.main-font-weight-medium;
     }
   }
 

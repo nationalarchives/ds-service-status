@@ -18,7 +18,7 @@
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <meta name="tna.page.refresh_time" content="{{ app_config.STATUS_PAGE_REFRESH_SECONDS }}">
     {%- if 'refresh' in request.args %}
-    <meta http-equiv="refresh" content="{{ app_config.STATUS_PAGE_REFRESH_SECONDS + 2 }}">
+    <meta http-equiv="refresh" content="{{ app_config.STATUS_PAGE_REFRESH_SECONDS + 5 }}">
     {%- endif %}
 {% endblock %}
 
@@ -41,7 +41,7 @@
   <div class="tna-refresh-banner__content tna-accent-blue tna-background-accent">
     <div class="tna-container">
       <div class="tna-column tna-column--flex-1">
-        <p id="refresh-countdown">Page will refresh every {{ app_config.STATUS_PAGE_REFRESH_SECONDS + 2 }} seconds.</p>
+        <p id="refresh-countdown">Refreshing every {{ app_config.STATUS_PAGE_REFRESH_SECONDS + 5 }} seconds.</p>
       </div>
       {%- if 'refresh' in request.args %}
       <div class="tna-column">

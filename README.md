@@ -55,5 +55,9 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 | `CACHE_TYPE`                     | https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching   | _none_                                                    |
 | `CACHE_DEFAULT_TIMEOUT`          | The number of seconds to cache pages for                                    | production: `300`, staging: `60`, develop: `0`, test: `0` |
 | `CACHE_DIR`                      | Directory for storing cached responses when using `FileSystemCache`         | `/tmp`                                                    |
+| `UPTIME_KUMA_API_URL`            | The base Uptime Kuma API URL including the `/api` path                      | _none_                                                    |
+| `UPTIME_KUMA_STATUS_PAGE_SLUG`   | The slug of the Uptime Kuma status page                                     | _none_                                                    |
+| `STATUS_PAGE_CACHE_DURATION`     | The number of seconds to cache the status page                              | `15`                                                      |
+| `STATUS_PAGE_REFRESH_SECONDS`    | If used, the number of second between automatic page refreshes.             | `60`                                                      |
 
 [^1] [Debugging in Flask](https://flask.palletsprojects.com/en/2.3.x/debugging/)

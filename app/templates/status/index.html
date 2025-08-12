@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {%- from 'components/button/macro.html' import tnaButton -%}
+{%- from 'components/checkboxes/macro.html' import tnaCheckboxes -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
 
 {#
@@ -18,7 +19,7 @@
 
 {% block content %}
 <div class="tna-section tna-container">
-  <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
+  <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny">
     <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
     <p>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></p>
     {%- if data.incident %}
@@ -49,7 +50,26 @@
     {{ data.config.description | markdown | safe }}
     {%- endif %}
   </div>
-  
+
+  <div class="tna-column" id="refresh-wrapper" hidden>
+    {{ tnaCheckboxes({
+      'label': 'Refresh',
+      'headingLevel': 2,
+      'headingSize': 's',
+      'id': 'refresh-page',
+      'name': 'refresh_page',
+      'items': [
+        {
+          'text': 'Automatically refresh this page',
+          'value': app_config.STATUS_PAGE_REFRESH_SECONDS,
+          'checked': 'refresh' in request.args
+        }
+      ],
+      'inline': True
+    }) }}
+    <p id="refresh-countdown" class="tna-!--margin-top-s" hidden></p>
+  </div>
+
   <div class="tna-column tna-column--full tna-!--margin-top-l">
     <div class="tna-monitor-summary-wrapper">
       {%- for group in data.publicGroupList %}

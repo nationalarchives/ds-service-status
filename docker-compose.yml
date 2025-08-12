@@ -17,6 +17,8 @@ services:
       - CSP_FONT_SRC='self',fonts.gstatic.com,use.typekit.net
       - UPTIME_KUMA_API_URL=https://uptime.tna.dblclk.dev/api
       - UPTIME_KUMA_STATUS_PAGE_SLUG=nationalarchives
+      - STATUS_PAGE_CACHE_DURATION=1
+      - STATUS_PAGE_REFRESH_SECONDS=5
     ports:
       - 65516:8080
     volumes:

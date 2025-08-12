@@ -1,3 +1,5 @@
+import os
+
 from app.lib.api import JSONAPIClient, ResourceNotFound
 from app.lib.cache import cache, cache_key_prefix
 from app.status import bp
@@ -5,10 +7,15 @@ from flask import current_app, render_template
 
 
 @bp.route("/")
-@cache.cached(key_prefix=cache_key_prefix)
+@cache.cached(
+    key_prefix=cache_key_prefix,
+    timeout=int(os.environ.get("STATUS_PAGE_CACHE_DURATION", "15")),
+)
 def index():
-    uptime_kuma_api_url = current_app.config["UPTIME_KUMA_API_URL"]
-    uptime_kuma_status_page_slug = current_app.config["UPTIME_KUMA_STATUS_PAGE_SLUG"]
+    uptime_kuma_api_url = current_app.config.get("UPTIME_KUMA_API_URL")
+    uptime_kuma_status_page_slug = current_app.config.get(
+        "UPTIME_KUMA_STATUS_PAGE_SLUG"
+    )
     if not uptime_kuma_api_url:
         current_app.logger.critical("UPTIME_KUMA_API_URL not set")
         raise Exception("UPTIME_KUMA_API_URL not set")

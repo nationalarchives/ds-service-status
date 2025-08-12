@@ -73,7 +73,6 @@
   <div class="tna-column tna-column--full tna-!--margin-top-l">
     <div class="tna-monitor-summary-wrapper">
       {%- for group in data.publicGroupList %}
-      {%- if loop.first %}
       {%- for item in group.monitorList %}
       {%- if heartbeats.heartbeatList[item.id | string] %}
       {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
@@ -90,7 +89,6 @@
       </div>
       {%- endif %}
       {%- endfor %}
-      {%- endif %}
       {%- endfor %}
     </div>
     <h2 class="tna-heading-m">Report an issue</h2>

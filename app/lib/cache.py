@@ -6,5 +6,5 @@ cache = Cache()
 
 def cache_key_prefix():
     """Make a key that includes GET parameters."""
-    return f"{request.path}{'+refresh' if request.args.get('refresh') else ''}"
+    return f"{request.path}{'+refresh' if 'refresh' in request.args else ''}"
     # return f"{request.full_path}{request.cookies.get('cookie_preferences_set' or '')}{request.cookies.get('theme' or '')}"

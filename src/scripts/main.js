@@ -68,6 +68,12 @@ const updateRefreshTimer = (refreshTime) => {
       $ariaLiveEl.textContent = `Page refreshing in ${secondsDifference} seconds…`;
     }
   }
+  if (secondsDifference <= 5) {
+    document.querySelectorAll(".tna-refresh-banner__content").forEach(($el) => {
+      $el.classList.remove("tna-accent-blue");
+      $el.classList.add("tna-accent-pink");
+    });
+  }
   if (secondsDifference <= 0) {
     $refreshTimer.textContent = "Refreshing page now…";
     window.location.reload();

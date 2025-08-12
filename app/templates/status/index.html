@@ -47,6 +47,7 @@
     <div class="tna-monitor-summary-wrapper">
       {%- for group in data.publicGroupList %}
       {%- for item in group.monitorList %}
+      {%- if heartbeats.heartbeatList[item.id | string] %}
       {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
       <div class="tna-monitor-summary {{ item_data.accent_colour }}">
         <div class="tna-monitor-summary__icon">
@@ -59,6 +60,7 @@
           <p class="tna-!--no-margin-top">{{ item_data.title }}</p>
         </div>
       </div>
+      {%- endif %}
       {%- endfor %}
       {%- endfor %}
     </div>
@@ -96,11 +98,9 @@
     <h2 class="tna-heading-l">{{ group.name }}</h2>
     <hr class="tna-!--margin-top-s">
     {%- for item in group.monitorList %}
+    {%- set item_heartbeats = heartbeats.heartbeatList[item.id | string] %}
+    {%- if item_heartbeats %}
     <div id="service-{{ item.name | slugify }}" class="tna-monitor">
-      {%- set item_heartbeats = heartbeats.heartbeatList[item.id | string] %}
-      {%- set most_recent_item_heartbeat = item_heartbeats | last %}
-      {%- set most_recent_item_heartbeat_data = most_recent_item_heartbeat.status | pretty_uptime_kuma_status %}
-      {%- set show_n_heartbeats_on_mobile = (item_heartbeats | length) / 2 %}
       <h3 class="tna-heading-m">
         {%- if item.url %}
         <a href="{{ item.url }}">{{ item.name }}</a>
@@ -108,10 +108,13 @@
         {{ item.name }}
         {%- endif %}
       </h3>
+      {%- set most_recent_item_heartbeat = item_heartbeats | last %}
+      {%- set most_recent_item_heartbeat_data = most_recent_item_heartbeat.status | pretty_uptime_kuma_status %}
+      {%- set show_n_heartbeats_on_mobile = ((item_heartbeats | length) / 2) | int %}
       <p class="tna-!--margin-top-xs">
         <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
       </p>
-      <div class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[(show_n_heartbeats_on_mobile + 1) | int]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
+      <div class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[show_n_heartbeats_on_mobile]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
         {%- for heartbeat in item_heartbeats %}
         {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
         <p class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat.status }}{{- ' tna-heartbeats__item--hide-on-mobile' if loop.index < show_n_heartbeats_on_mobile else '' -}}" title="{{ heartbeat.time | pretty_date }} (UTC): {{ heartbeat_item_data.title }}">
@@ -127,10 +130,15 @@
         {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
         {%- if item_last_24h_uptime %}
         <dt>Uptime over the last 24 hours</dt>
-        <dd>{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
+        <dd data-uptime="{{ item_last_24h_uptime * 100 }}">{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
+        {%- endif %}
+        {%- if most_recent_item_heartbeat.msg %}
+        <dt>Last message</dt>
+        <dd>{{ most_recent_item_heartbeat.msg }}</dd>
         {%- endif %}
       </dl>
     </div>
+    {%- endif %}
     {%- endfor %}
     {%- endfor %}
     

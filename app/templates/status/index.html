@@ -46,6 +46,7 @@
   <div class="tna-column tna-column--full tna-!--margin-top-l">
     <div class="tna-monitor-summary-wrapper">
       {%- for group in data.publicGroupList %}
+      {%- if loop.first %}
       {%- for item in group.monitorList %}
       {%- if heartbeats.heartbeatList[item.id | string] %}
       {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
@@ -62,6 +63,7 @@
       </div>
       {%- endif %}
       {%- endfor %}
+      {%- endif %}
       {%- endfor %}
     </div>
     <h2 class="tna-heading-m">Report an issue</h2>
@@ -95,7 +97,7 @@
 
   <div class="tna-column tna-column--full tna-!--margin-top-l">  
     {%- for group in data.publicGroupList %}
-    <h2 class="tna-heading-l">{{ group.name }}</h2>
+    <h2 class="tna-heading-l" id="group-{{ group.name | slugify }}">{{ group.name }}</h2>
     <hr class="tna-!--margin-top-s">
     {%- for item in group.monitorList %}
     {%- set item_heartbeats = heartbeats.heartbeatList[item.id | string] %}

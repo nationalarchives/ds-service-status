@@ -20,7 +20,7 @@
 <div class="tna-section tna-container">
   <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
     <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
-    <p>Page last generated on <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></p>
+    <p>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></p>
     {%- if data.incident %}
       {%- set incident %}
       <h3 class="tna-heading-m">{{ data.incident.title }}</h3>
@@ -134,7 +134,7 @@
       <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
         <dt>Last updated</dt>
         <dd>
-          <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time }} (UTC)</time>
+          <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
         </dd>
         {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
         {%- if item_last_24h_uptime %}

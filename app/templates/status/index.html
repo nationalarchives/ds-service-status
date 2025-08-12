@@ -2,6 +2,7 @@
 
 {%- from 'components/button/macro.html' import tnaButton -%}
 {%- from 'components/checkboxes/macro.html' import tnaCheckboxes -%}
+{%- from 'components/skip-link/macro.html' import tnaSkipLink -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
 
 {#
@@ -15,9 +16,42 @@
 {% block head %}
 {{ super() }}
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="tna.page.refresh_time" content="{{ app_config.STATUS_PAGE_REFRESH_SECONDS }}">
+    {%- if 'refresh' in request.args %}
+    <meta http-equiv="refresh" content="{{ app_config.STATUS_PAGE_REFRESH_SECONDS + 2 }}">
+    {%- endif %}
 {% endblock %}
 
+
+{% block skipLink %}
+{# TODO: Enable when skip link doesn't prefix the href with a hash
+{%- if 'refresh' in request.args %}
+  {{ tnaSkipLink({
+    'href': url_for('status.index'),
+    'text': 'Stop automatically refreshing this page'
+  }) }}
+{%- endif %}
+#}
+{{ super() }}
+{% endblock %}
+
+
 {% block content %}
+<div class="tna-refresh-banner"{{ '' if 'refresh' in request.args else ' hidden' }}>
+  <div class="tna-refresh-banner__content tna-accent-blue tna-background-accent">
+    <div class="tna-container">
+      <div class="tna-column tna-column--flex-1">
+        <p id="refresh-countdown">Page will refresh every {{ app_config.STATUS_PAGE_REFRESH_SECONDS + 2 }} seconds.</p>
+      </div>
+      {%- if 'refresh' in request.args %}
+      <div class="tna-column">
+        <a href="{{ url_for('status.index') }}" aria-label="Stop automatically refreshing this page" title="Stop automatically refreshing this page">Stop<span class="tna-!--hide-on-small tna-!--hide-on-tiny"> refreshing</span></a>
+      </div>
+      {%- endif %}
+    </div>
+  </div>
+</div>
+
 <div class="tna-section tna-container">
   <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny">
     <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
@@ -51,24 +85,18 @@
     {%- endif %}
   </div>
 
-  <div class="tna-column" id="refresh-wrapper" hidden>
-    {{ tnaCheckboxes({
-      'label': 'Refresh',
-      'headingLevel': 2,
-      'headingSize': 's',
-      'id': 'refresh-page',
-      'name': 'refresh_page',
-      'items': [
-        {
-          'text': 'Automatically refresh this page',
-          'value': app_config.STATUS_PAGE_REFRESH_SECONDS,
-          'checked': 'refresh' in request.args
-        }
-      ],
-      'inline': True
-    }) }}
-    <p id="refresh-countdown" class="tna-!--margin-top-s" hidden></p>
+  {%- if 'refresh' not in request.args %}
+  <div class="tna-column">
+    <div class="tna-button-group tna-button-group--small tna-!--margin-top-s tna-!--no-margin-top-large tna-!--no-margin-top-medium">
+      {{ tnaButton({
+        'text': 'Automatically refresh',
+        'href': url_for('status.index') + '?refresh',
+        'icon': 'rotate',
+        'title': 'Automatically refresh this page every ' + (app_config.STATUS_PAGE_REFRESH_SECONDS | string) + ' seconds'
+      }) }}
+    </div>
   </div>
+  {%- endif %}
 
   <div class="tna-column tna-column--full tna-!--margin-top-l">
     <div class="tna-monitor-summary-wrapper">

@@ -11,24 +11,52 @@
 
 @use "@nationalarchives/frontend/nationalarchives/all";
 
+$refresh-banner-height: 2.5rem;
+
+.tna-template__body {
+  scroll-padding: $refresh-banner-height;
+}
+
+.tna-main {
+  position: relative;
+}
+
+.tna-refresh-banner {
+  overflow: visible;
+
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+
+  line-height: $refresh-banner-height;
+  pointer-events: none;
+
+  &__content {
+    @include typography.font-size(16);
+    @include typography.main-font-weight-medium;
+
+    height: $refresh-banner-height;
+
+    position: sticky;
+    top: 0;
+    pointer-events: all;
+
+    @include media.on-tiny {
+      @include typography.font-size(14);
+    }
+  }
+
+  &:not([hidden]) {
+    + * {
+      margin-top: $refresh-banner-height;
+    }
+  }
+}
+
 .tna-warning {
   p {
     margin-top: spacing.space(0.5);
   }
-}
-
-#refresh-wrapper {
-  .tna-checkboxes__item-label {
-    @include typography.font-size(16);
-  }
-
-  @include media.on-mobile {
-    margin-top: spacing.space(2) !important;
-  }
-}
-
-#refresh-countdown {
-  @include typography.font-size(16);
 }
 
 .tna-dl {

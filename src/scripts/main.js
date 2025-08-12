@@ -51,55 +51,56 @@ const rtf1 = new Intl.RelativeTimeFormat("en", {
 //   // }, 1000);
 // });
 
-const $refreshWrapper = document.getElementById("refresh-wrapper");
-const $refreshCheckbox = document.querySelector("input[name='refresh_page']");
 const $refreshTimer = document.getElementById("refresh-countdown");
+const $refreshTime = document.querySelector(
+  "meta[name='tna.page.refresh_time']",
+);
 
 const updateRefreshTimer = (refreshTime) => {
-  console.log("Updating refresh timer", refreshTime);
-  if ($refreshTimer) {
-    $refreshTimer.removeAttribute("hidden");
-    const secondsDifference = Math.round(
-      (refreshTime.getTime() - new Date().getTime()) / 1000,
-    );
-    if (secondsDifference <= 0) {
-      $refreshTimer.textContent = "Page refreshing now...";
-      window.location.reload();
-    } else {
-      $refreshTimer.textContent = `Next refresh ${rtf1.format(secondsDifference, "second")}...`;
+  const secondsDifference = Math.round(
+    (refreshTime.getTime() - new Date().getTime()) / 1000,
+  );
+  if (secondsDifference === 10) {
+    const $ariaLiveEl = document.getElementById("aria-live-refresh");
+    if ($ariaLiveEl) {
+      $ariaLiveEl.textContent =
+        "This page will automatically refresh in 10 seconds.";
     }
+  }
+  if (secondsDifference <= 0) {
+    $refreshTimer.textContent = "Page refreshing now...";
+    window.location.reload();
+  } else {
+    $refreshTimer.textContent = `Refreshing ${rtf1.format(secondsDifference, "second")}...`;
   }
 };
 
-if ($refreshWrapper && $refreshCheckbox && $refreshTimer) {
-  $refreshWrapper.removeAttribute("hidden");
-  $refreshCheckbox.addEventListener("change", (e) => {
-    if (e.target.checked) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("refresh", "true");
-      window.location = url.toString();
-    } else {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("refresh");
-      window.location = url.toString();
-    }
-  });
-
-  if ($refreshCheckbox.checked) {
+if ($refreshTimer && $refreshTime) {
+  const url = new URL(window.location.href);
+  if (url.searchParams.has("refresh")) {
     const $generatedTimeEl = document.querySelector(
       "meta[name='tna.response.generated'",
     );
     if ($generatedTimeEl) {
-      console.log("Found generated time meta tag", $generatedTimeEl);
       const generatedTime = new Date($generatedTimeEl.getAttribute("content"));
       if (generatedTime) {
         const refreshTime = new Date(
-          generatedTime.getTime() + parseInt($refreshCheckbox.value) * 1000,
+          generatedTime.getTime() +
+            parseInt($refreshTime.getAttribute("content")) * 1000,
         );
-        updateRefreshTimer(refreshTime);
-        setInterval(() => {
+        if (refreshTime) {
+          const $ariaLiveEl = document.createElement("p");
+          $ariaLiveEl.id = "aria-live-refresh";
+          $ariaLiveEl.setAttribute("aria-live", "assertive");
+          $ariaLiveEl.setAttribute("role", "status");
+          $ariaLiveEl.setAttribute("class", "tna-!--visually-hidden");
+          document.body.appendChild($ariaLiveEl);
+
           updateRefreshTimer(refreshTime);
-        }, 1000);
+          setInterval(() => {
+            updateRefreshTimer(refreshTime);
+          }, 1000);
+        }
       }
     }
   }

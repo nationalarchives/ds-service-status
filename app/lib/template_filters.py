@@ -138,10 +138,16 @@ def seconds_to_time(s):
     minutes_label = minutes_label if minutes == 1 else f"{minutes_label}s"
     seconds_label = seconds_label if seconds == 1 else f"{seconds_label}s"
     if hours > 0:
+        if seconds == 0 and minutes == 0:
+            return f"{hours} {hours_label}"
+        if seconds == 0:
+            return f"{hours} {hours_label} {minutes} {minutes_label}"
         return (
             f"{hours} {hours_label} {minutes} {minutes_label} {seconds} {seconds_label}"
         )
     if minutes > 0:
+        if seconds == 0:
+            return f"{minutes} {minutes_label}"
         return f"{minutes} {minutes_label} {seconds} {seconds_label}"
     return f"{seconds} {seconds_label}"
 

@@ -7,6 +7,8 @@ from app.lib.template_filters import (
     markdown,
     pretty_date,
     pretty_uptime_kuma_status,
+    previous_incidents,
+    seconds_to_time,
     slugify,
     time_ago,
 )
@@ -81,9 +83,11 @@ def create_app(config_class):
         ]
     )
 
+    app.add_template_filter(previous_incidents)
     app.add_template_filter(markdown)
     app.add_template_filter(pretty_date)
     app.add_template_filter(pretty_uptime_kuma_status)
+    app.add_template_filter(seconds_to_time)
     app.add_template_filter(slugify)
     app.add_template_filter(time_ago)
 

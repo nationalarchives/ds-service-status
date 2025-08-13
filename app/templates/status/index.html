@@ -182,11 +182,41 @@
         <dd>
           <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
         </dd>
+        
         {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
         {%- if item_last_24h_uptime %}
         <dt>Uptime over the last 24 hours</dt>
         <dd data-uptime="{{ item_last_24h_uptime * 100 }}">{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
         {%- endif %}
+
+        {%- set most_recent_incidents = item_heartbeats | previous_incidents %}
+        {%- if most_recent_incidents %}
+        <dt>Recent incidents</dt>
+        <dd>
+          <ol class="tna-ol tna-ul--dashed tna-ul--spaced tna-!--margin-top-xs">
+            {%- for incident in most_recent_incidents %}
+            <li>
+              {{ incident.status.title -}}
+              {%- if incident.duration_seconds -%}
+              : <strong>{{ incident.duration_seconds | seconds_to_time }}</strong>
+              {%- endif %}
+              <br>
+              {%- if incident.start.time %}
+                From
+                <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
+                {%- if incident.end.time %}
+                  to
+                  <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+                {%- endif %}
+              {%- elif incident.end.time %}
+                Until <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+              {%- endif %}
+            </li>
+            {%- endfor %}
+          </ol>
+        </dd>
+        {%- endif %}
+
         {%- if most_recent_item_heartbeat.msg %}
         <dt>Last message</dt>
         <dd>{{ most_recent_item_heartbeat.msg }}</dd>

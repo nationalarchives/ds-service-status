@@ -1,4 +1,5 @@
 import datetime
+import math
 import re
 
 from markdown_it import MarkdownIt
@@ -48,7 +49,7 @@ def pretty_uptime_kuma_status(s):
         }
     if s == 2:
         return {
-            "title": "Pending",
+            "title": "Pending…",
             "accent_colour": "tna-accent-yellow",
             "fontawesome_icon": "fa-hourglass-half",
         }
@@ -59,6 +60,91 @@ def pretty_uptime_kuma_status(s):
             "fontawesome_icon": "fa-wrench",
         }
     return {"title": "Unknown", "accent_colour": "", "fontawesome_icon": "fa-question"}
+
+
+def previous_incidents(heartbeats):
+    if not heartbeats or not any(
+        heartbeat.get("status") == 0 for heartbeat in heartbeats
+    ):
+        return []
+    heartbeats = sorted(heartbeats, key=lambda x: x.get("time", ""), reverse=True)
+    incidents = []
+    index = 0
+    start = None
+    end = None
+    start_found = False
+    end_found = heartbeats[0].get("status") == 0
+    for index, heartbeat in enumerate(heartbeats):
+        if end_found:
+            if heartbeat.get("status") != 0:
+                start = heartbeats[index - 1] if index > 0 else heartbeat
+                start_found = True
+        else:
+            if heartbeat.get("status") == 0:
+                end = heartbeats[index - 1] if index > 0 else heartbeat
+                end_found = True
+        if end_found and (start_found or index == len(heartbeats) - 1):
+            incidents.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "start_found": start_found,
+                    "end_found": end_found,
+                    "duration_seconds": (
+                        int(
+                            (
+                                (
+                                    datetime.datetime.fromisoformat(end.get("time"))
+                                    if end
+                                    else datetime.datetime.now()
+                                )
+                                - datetime.datetime.fromisoformat(start.get("time"))
+                            ).total_seconds()
+                        )
+                        if start
+                        else None
+                    ),
+                    "status": pretty_uptime_kuma_status(
+                        start.get("status")
+                        if start
+                        else (
+                            heartbeats[-1].get("status")
+                            if index == len(heartbeats) - 1 and not start_found
+                            else (end.get("status") if end else None)
+                        )
+                    ),
+                }
+            )
+            start = None
+            end = None
+            start_found = False
+            end_found = False
+    return incidents
+
+
+def seconds_to_time(s):
+    hours_label = "hour"
+    minutes_label = "minute"
+    seconds_label = "second"
+    if not s:
+        return f"00{hours_label} 00{minutes_label} 00{seconds_label}"
+    total_seconds = int(s)
+    hours = math.floor(total_seconds / 3600)
+    # hours_padded = str(hours).rjust(2, "0")
+    minutes = math.floor((total_seconds - (hours * 3600)) / 60)
+    # minutes_padded = str(minutes).rjust(2, "0")
+    seconds = total_seconds - (hours * 3600) - (minutes * 60)
+    # seconds_padded = str(seconds).rjust(2, "0")
+    hours_label = hours_label if hours == 1 else f"{hours_label}s"
+    minutes_label = minutes_label if minutes == 1 else f"{minutes_label}s"
+    seconds_label = seconds_label if seconds == 1 else f"{seconds_label}s"
+    if hours > 0:
+        return (
+            f"{hours} {hours_label} {minutes} {minutes_label} {seconds} {seconds_label}"
+        )
+    if minutes > 0:
+        return f"{minutes} {minutes_label} {seconds} {seconds_label}"
+    return f"{seconds} {seconds_label}"
 
 
 def relative_time(date):

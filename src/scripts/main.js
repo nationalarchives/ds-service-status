@@ -82,7 +82,7 @@ const updateRefreshTimer = (refreshTime) => {
   if (secondsDifference <= 5) {
     document.querySelectorAll(".tna-refresh-banner__content").forEach(($el) => {
       $el.classList.remove("tna-accent-blue");
-      $el.classList.add("tna-accent-pink");
+      $el.classList.add("tna-accent-yellow");
     });
   }
   if (secondsDifference <= 0) {

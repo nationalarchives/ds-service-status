@@ -156,6 +156,17 @@ $refresh-banner-height: 2.5rem;
       }
     }
   }
+
+  @include media.on-mobile {
+    &__icon {
+      @include typography.font-size(24);
+      width: 3rem;
+    }
+
+    &__content {
+      padding: spacing.space(0.5) spacing.space(0.75);
+    }
+  }
 }
 
 .tna-monitor {
@@ -175,6 +186,8 @@ $refresh-banner-height: 2.5rem;
   gap: 1px;
 
   position: relative;
+
+  list-style: none;
 
   &::before,
   &::after {

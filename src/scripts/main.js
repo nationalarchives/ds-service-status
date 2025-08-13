@@ -43,13 +43,24 @@ const rtf1 = new Intl.RelativeTimeFormat("en", {
 //   }
 // };
 
-// document.querySelectorAll("time[datetime]").forEach(($el) => {
-//   $el.setAttribute("title", $el.textContent);
-//   updateTimeElements($el);
-//   // setInterval(() => {
-//   //   updateTimeElements($el);
-//   // }, 1000);
-// });
+document.querySelectorAll("time[datetime]").forEach(($el) => {
+  $el.setAttribute("title", $el.textContent);
+  const date = new Date($el.getAttribute("datetime"));
+  if (date) {
+    $el.textContent = `${date.toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })}, ${date.getHours().toString().padStart(2, "0")}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+  }
+  // updateTimeElements($el);
+  // setInterval(() => {
+  //   updateTimeElements($el);
+  // }, 1000);
+});
 
 const $refreshTimer = document.getElementById("refresh-countdown");
 const $refreshTime = document.querySelector(

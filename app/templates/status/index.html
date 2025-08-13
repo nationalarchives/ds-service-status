@@ -169,14 +169,14 @@
       <p class="tna-!--margin-top-xs">
         <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
       </p>
-      <div class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[show_n_heartbeats_on_mobile]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
+      <ol class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[show_n_heartbeats_on_mobile]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
         {%- for heartbeat in item_heartbeats %}
         {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
-        <p class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat.status }}{{- ' tna-heartbeats__item--hide-on-mobile' if loop.index < show_n_heartbeats_on_mobile else '' -}}" title="{{ heartbeat.time | pretty_date }} (UTC): {{ heartbeat_item_data.title }}">
+        <li class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat.status }}{{- ' tna-heartbeats__item--hide-on-mobile' if loop.index < show_n_heartbeats_on_mobile else '' -}}" title="{{ heartbeat.time | pretty_date }} (UTC): {{ heartbeat_item_data.title }}">
           <time datetime="{{ heartbeat.time }}Z">{{ heartbeat.time | pretty_date }} (UTC)</time>: {{ heartbeat_item_data.title }}
-        </p>
+        </li>
         {%- endfor %}
-      </div>
+      </ol>
       <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
         <dt>Last updated</dt>
         <dd>

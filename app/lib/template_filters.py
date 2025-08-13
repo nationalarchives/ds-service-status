@@ -69,47 +69,46 @@ def previous_incidents(heartbeats):
         return []
     heartbeats = sorted(heartbeats, key=lambda x: x.get("time", ""), reverse=True)
     incidents = []
-    index = 0
     start = None
     end = None
-    start_found = False
-    end_found = heartbeats[0].get("status") == 0
+    has_start = False
+    has_end = False
+    is_ongoing_incident = heartbeats[0].get("status") == 0
     for index, heartbeat in enumerate(heartbeats):
-        if end_found:
+        if index == 0 and is_ongoing_incident:
+            end = heartbeat
+        elif index == len(heartbeats) - 1 and heartbeat.get("status") == 0:
+            start = heartbeat
+        if end:
             if heartbeat.get("status") != 0:
                 start = heartbeats[index - 1] if index > 0 else heartbeat
-                start_found = True
-        else:
-            if heartbeat.get("status") == 0:
-                end = heartbeats[index - 1] if index > 0 else heartbeat
-                end_found = True
-        if end_found and (start_found or index == len(heartbeats) - 1):
+                has_start = True
+        elif heartbeat.get("status") == 0:
+            end = heartbeats[index - 1] if index > 0 else heartbeat
+            has_end = True
+        if start and end:
             incidents.append(
                 {
                     "start": start,
                     "end": end,
-                    "start_found": start_found,
-                    "end_found": end_found,
-                    "duration_seconds": (
-                        int(
+                    "has_start": has_start,
+                    "has_end": has_end,
+                    "duration_seconds": int(
+                        (
                             (
-                                (
-                                    datetime.datetime.fromisoformat(end.get("time"))
-                                    if end
-                                    else datetime.datetime.now()
-                                )
-                                - datetime.datetime.fromisoformat(start.get("time"))
-                            ).total_seconds()
-                        )
-                        if start
-                        else None
+                                datetime.datetime.fromisoformat(end.get("time"))
+                                if has_end
+                                else datetime.datetime.now()
+                            )
+                            - datetime.datetime.fromisoformat(start.get("time"))
+                        ).total_seconds()
                     ),
                     "status": pretty_uptime_kuma_status(
                         start.get("status")
                         if start
                         else (
                             heartbeats[-1].get("status")
-                            if index == len(heartbeats) - 1 and not start_found
+                            if index == len(heartbeats) - 1 and not has_start
                             else (end.get("status") if end else None)
                         )
                     ),
@@ -117,8 +116,8 @@ def previous_incidents(heartbeats):
             )
             start = None
             end = None
-            start_found = False
-            end_found = False
+            has_start = False
+            has_end = False
     return incidents
 
 

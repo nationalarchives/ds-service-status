@@ -196,21 +196,28 @@
           <ol class="tna-ol tna-ul--dashed tna-ul--spaced tna-!--margin-top-xs">
             {%- for incident in most_recent_incidents %}
             <li>
-              {{ incident.status.title -}}
-              {%- if incident.duration_seconds -%}
-              : <strong>{{ incident.duration_seconds | seconds_to_time }}</strong>
-              {%- endif %}
+              <strong>{{ incident.status.title }}</strong>
+
               <br>
-              {%- if incident.start.time %}
-                From
+              Started:
+              {%- if incident.has_start %}
                 <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
-                {%- if incident.end.time %}
-                  to
-                  <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
-                {%- endif %}
-              {%- elif incident.end.time %}
-                Until <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+              {%- else %}
+                Unsure (no record of start time)
               {%- endif %}
+
+              {%- if incident.has_end %}
+                <br>
+                Resolved:
+                <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+              {%- endif %}
+
+              {%- if incident.duration_seconds -%}
+                <br>
+                Duration:
+                <strong>{% if not incident.has_start %}At least {% endif %}{{ incident.duration_seconds | seconds_to_time }}{% if not incident.has_end %} (ongoing){% endif %}</strong>
+              {%- endif %}
+
             </li>
             {%- endfor %}
           </ol>

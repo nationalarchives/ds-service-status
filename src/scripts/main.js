@@ -86,7 +86,7 @@ const updateRefreshTimer = (refreshTime) => {
     });
   }
   if (secondsDifference <= 0) {
-    $refreshTimer.textContent = "Refreshing page now…";
+    $refreshTimer.textContent = "Refreshing page…";
     window.location.reload();
   } else {
     $refreshTimer.textContent = `Refreshing ${rtf1.format(secondsDifference, "second")}…`;

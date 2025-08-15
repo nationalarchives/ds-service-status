@@ -99,8 +99,9 @@ def create_app(config_class):
             now_pretty=now_pretty,
             app_config={
                 "ENVIRONMENT_NAME": app.config.get("ENVIRONMENT_NAME"),
-                "TNA_FRONTEND_VERSION": app.config.get("TNA_FRONTEND_VERSION"),
+                "CONTAINER_IMAGE": app.config.get("CONTAINER_IMAGE"),
                 "BUILD_VERSION": app.config.get("BUILD_VERSION"),
+                "TNA_FRONTEND_VERSION": app.config.get("TNA_FRONTEND_VERSION"),
                 "COOKIE_DOMAIN": app.config.get("COOKIE_DOMAIN"),
                 "STATUS_PAGE_REFRESH_SECONDS": app.config.get(
                     "STATUS_PAGE_REFRESH_SECONDS"

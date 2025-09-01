@@ -14,7 +14,9 @@
 $refresh-banner-height: 2.5rem;
 
 .tna-template {
-  scroll-padding: $refresh-banner-height;
+  &--padded {
+    scroll-padding: $refresh-banner-height;
+  }
 }
 
 .tna-main {

@@ -52,11 +52,30 @@
   </div>
 </div>
 
-<div class="tna-section tna-container">
-  <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny">
-    <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
-    <p>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></p>
+<div class="tna-section">
+  <div class="tna-container">
+    <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny">
+      <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+      <p>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></p>
+    </div>
+
+    {%- if 'refresh' not in request.args %}
+    <div class="tna-column">
+      <div class="tna-button-group tna-button-group--small tna-!--margin-top-s tna-!--no-margin-top-large tna-!--no-margin-top-medium">
+        {{ tnaButton({
+          'text': 'Automatically refresh',
+          'href': url_for('status.index') + '?refresh',
+          'icon': 'rotate',
+          'title': 'Automatically refresh this page every ' + (app_config.STATUS_PAGE_REFRESH_SECONDS | string) + ' seconds'
+        }) }}
+      </div>
+    </div>
+    {%- endif %}
+  </div>
+
+  <div class="tna-container">
     {%- if data.incident %}
+    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-m">
       {%- set incident %}
       <h3 class="tna-heading-m">{{ data.incident.title }}</h3>
       {{ data.incident.content | markdown | safe }}
@@ -76,172 +95,162 @@
 
       {{ tnaWarning({
         'headingLevel': 2,
-        'body': incident,
-        'classes': 'tna-!--margin-bottom-m'
-      }) }}
-    {%- endif %}
-    {%- if data.config.description %}
-    {{ data.config.description | markdown | safe }}
-    {%- endif %}
-  </div>
-
-  {%- if 'refresh' not in request.args %}
-  <div class="tna-column">
-    <div class="tna-button-group tna-button-group--small tna-!--margin-top-s tna-!--no-margin-top-large tna-!--no-margin-top-medium">
-      {{ tnaButton({
-        'text': 'Automatically refresh',
-        'href': url_for('status.index') + '?refresh',
-        'icon': 'rotate',
-        'title': 'Automatically refresh this page every ' + (app_config.STATUS_PAGE_REFRESH_SECONDS | string) + ' seconds'
+        'body': incident
       }) }}
     </div>
-  </div>
-  {%- endif %}
+    {%- endif %}
 
-  <div class="tna-column tna-column--full tna-!--margin-top-l">
-    <div class="tna-monitor-summary-wrapper">
+    {%- if data.config.description %}
+    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-m">
+      {{ data.config.description | markdown | safe }}
+    </div>
+    {%- endif %}
+
+    <div class="tna-column tna-column--full tna-!--margin-top-l">
+      <div class="tna-monitor-summary-wrapper">
+        {%- for group in data.publicGroupList %}
+        {%- for item in group.monitorList %}
+        {%- if heartbeats.heartbeatList[item.id | string] %}
+        {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
+        <div class="tna-monitor-summary {{ item_data.accent_colour }}">
+          <div class="tna-monitor-summary__icon">
+            <i class="fa-solid fa-fw {{ item_data.fontawesome_icon }}" aria-hidden="true"></i>
+          </div>
+          <div class="tna-monitor-summary__content">
+            <h2 class="tna-heading-s tna-heading--no-link-arrow">
+              <a href="#service-{{ item.name | slugify }}" class="tna-link--no-visited-state">{{ item.name }}</a>
+            </h2>
+            <p class="tna-!--no-margin-top">{{ item_data.title }}</p>
+          </div>
+        </div>
+        {%- endif %}
+        {%- endfor %}
+        {%- endfor %}
+      </div>
+      <h2 class="tna-heading-m">Report an issue</h2>
+      <p>Found something that isn't working? Send an email to <a href="mailto:webmaster@nationalarchives.gov.uk">webmaster@nationalarchives.gov.uk</a>.</p>
+    </div>
+
+    {%- if data.maintenanceList %}
+    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
+      <h2 class="tna-heading-l" id="planned-maintenance">Planned maintenance</h2>
+      {%- for item in data.maintenanceList %}
+      <div class="tna-aside tna-!--margin-top-s tna-accent-blue tna-background-accent-light">
+        <h3 class="tna-heading-m" id="group-{{ item.title | slugify }}">{{ item.title }}</h3>
+        {{ item.description | markdown | safe }}
+        {%- if (item.timeslotList | length) == 1 %}
+        <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslot</h4>
+        <p>From <strong><time datetime="{{ item.timeslotList[0].startDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].startDate | pretty_date }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ item.timeslotList[0].endDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].endDate | pretty_date }} ({{ item.timezone }})</time></strong></p>
+        {%- elif (item.timeslotList | length) > 1 %}
+        <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslots</h4>
+        <ul class="tna-ul">
+          {%- for timeslot in item.timeslotList %}
+          <li>
+            From <strong><time datetime="{{ timeslot.startDate }}{{ item.timezoneOffset }}">{{ timeslot.startDate | pretty_date }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ timeslot.endDate }}{{ item.timezoneOffset }}">{{ timeslot.endDate | pretty_date }} ({{ item.timezone }})</time></strong>
+          </li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+
+    <div class="tna-column tna-column--full tna-!--margin-top-l">  
       {%- for group in data.publicGroupList %}
+      <h2 class="tna-heading-l" id="group-{{ group.name | slugify }}">{{ group.name }}</h2>
+      <hr class="tna-!--margin-top-s">
       {%- for item in group.monitorList %}
-      {%- if heartbeats.heartbeatList[item.id | string] %}
-      {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
-      <div class="tna-monitor-summary {{ item_data.accent_colour }}">
-        <div class="tna-monitor-summary__icon">
-          <i class="fa-solid fa-fw {{ item_data.fontawesome_icon }}" aria-hidden="true"></i>
-        </div>
-        <div class="tna-monitor-summary__content">
-          <h2 class="tna-heading-s tna-heading--no-link-arrow">
-            <a href="#service-{{ item.name | slugify }}" class="tna-link--no-visited-state">{{ item.name }}</a>
-          </h2>
-          <p class="tna-!--no-margin-top">{{ item_data.title }}</p>
-        </div>
+      {%- set item_heartbeats = heartbeats.heartbeatList[item.id | string] %}
+      {%- if item_heartbeats %}
+      <div id="service-{{ item.name | slugify }}" class="tna-monitor">
+        <h3 class="tna-heading-m">
+          {%- if item.url %}
+          <a href="{{ item.url }}">{{ item.name }}</a>
+          {%- else %}
+          {{ item.name }}
+          {%- endif %}
+        </h3>
+        {%- set most_recent_item_heartbeat = item_heartbeats | last %}
+        {%- set most_recent_item_heartbeat_data = most_recent_item_heartbeat.status | pretty_uptime_kuma_status %}
+        {%- set show_n_heartbeats_on_mobile = ((item_heartbeats | length) / 2) | int %}
+        <p class="tna-!--margin-top-xs">
+          <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
+        </p>
+        <ol class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[show_n_heartbeats_on_mobile]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
+          {%- for heartbeat in item_heartbeats %}
+          {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
+          <li class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat.status }}{{- ' tna-heartbeats__item--hide-on-mobile' if loop.index < show_n_heartbeats_on_mobile else '' -}}" title="{{ heartbeat.time | pretty_date }} (UTC): {{ heartbeat_item_data.title }}">
+            <time datetime="{{ heartbeat.time }}Z">{{ heartbeat.time | pretty_date }} (UTC)</time>: {{ heartbeat_item_data.title }}
+          </li>
+          {%- endfor %}
+        </ol>
+        <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
+          <dt>Last updated</dt>
+          <dd>
+            <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
+          </dd>
+          
+          {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
+          {%- if item_last_24h_uptime %}
+          <dt>Uptime over the last 24 hours</dt>
+          <dd data-uptime="{{ item_last_24h_uptime * 100 }}">{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
+          {%- endif %}
+
+          {%- set most_recent_incidents = item_heartbeats | previous_incidents %}
+          {%- if most_recent_incidents %}
+          <dt>Recent incidents</dt>
+          <dd>
+            <ol class="tna-ol tna-ul--dashed tna-ul--spaced tna-!--margin-top-xs">
+              {%- for incident in most_recent_incidents %}
+              <li>
+                <strong>{{ incident.status.title }}</strong>
+
+                <br>
+                Started:
+                {%- if incident.has_start %}
+                  <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
+                {%- else %}
+                  Unsure (no record of start time)
+                {%- endif %}
+
+                {%- if incident.has_end %}
+                  <br>
+                  Resolved:
+                  <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+                {%- endif %}
+
+                {%- if incident.duration_seconds -%}
+                  <br>
+                  Duration:
+                  <strong>{% if not incident.has_start %}At least {% endif %}{{ incident.duration_seconds | seconds_to_time }}{% if not incident.has_end %} (ongoing){% endif %}</strong>
+                {%- endif %}
+
+              </li>
+              {%- endfor %}
+            </ol>
+          </dd>
+          {%- endif %}
+
+          {%- if most_recent_item_heartbeat.msg %}
+          <dt>Last message</dt>
+          <dd>{{ most_recent_item_heartbeat.msg }}</dd>
+          {%- endif %}
+        </dl>
       </div>
       {%- endif %}
       {%- endfor %}
       {%- endfor %}
-    </div>
-    <h2 class="tna-heading-m">Report an issue</h2>
-    <p>Found something that isn't working? Send an email to <a href="mailto:webmaster@nationalarchives.gov.uk">webmaster@nationalarchives.gov.uk</a>.</p>
-  </div>
-
-  {%- if data.maintenanceList %}
-  <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
-    <h2 class="tna-heading-l" id="planned-maintenance">Planned maintenance</h2>
-    {%- for item in data.maintenanceList %}
-    <div class="tna-aside tna-!--margin-top-s tna-accent-blue tna-background-accent-light">
-      <h3 class="tna-heading-m" id="group-{{ item.title | slugify }}">{{ item.title }}</h3>
-      {{ item.description | markdown | safe }}
-      {%- if (item.timeslotList | length) == 1 %}
-      <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslot</h4>
-      <p>From <strong><time datetime="{{ item.timeslotList[0].startDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].startDate | pretty_date }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ item.timeslotList[0].endDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].endDate | pretty_date }} ({{ item.timezone }})</time></strong></p>
-      {%- elif (item.timeslotList | length) > 1 %}
-      <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslots</h4>
-      <ul class="tna-ul">
-        {%- for timeslot in item.timeslotList %}
-        <li>
-          From <strong><time datetime="{{ timeslot.startDate }}{{ item.timezoneOffset }}">{{ timeslot.startDate | pretty_date }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ timeslot.endDate }}{{ item.timezoneOffset }}">{{ timeslot.endDate | pretty_date }} ({{ item.timezone }})</time></strong>
-        </li>
-        {%- endfor %}
-      </ul>
-      {%- endif %}
-    </div>
-    {%- endfor %}
-  </div>
-  {%- endif %}
-
-  <div class="tna-column tna-column--full tna-!--margin-top-l">  
-    {%- for group in data.publicGroupList %}
-    <h2 class="tna-heading-l" id="group-{{ group.name | slugify }}">{{ group.name }}</h2>
-    <hr class="tna-!--margin-top-s">
-    {%- for item in group.monitorList %}
-    {%- set item_heartbeats = heartbeats.heartbeatList[item.id | string] %}
-    {%- if item_heartbeats %}
-    <div id="service-{{ item.name | slugify }}" class="tna-monitor">
-      <h3 class="tna-heading-m">
-        {%- if item.url %}
-        <a href="{{ item.url }}">{{ item.name }}</a>
-        {%- else %}
-        {{ item.name }}
-        {%- endif %}
-      </h3>
-      {%- set most_recent_item_heartbeat = item_heartbeats | last %}
-      {%- set most_recent_item_heartbeat_data = most_recent_item_heartbeat.status | pretty_uptime_kuma_status %}
-      {%- set show_n_heartbeats_on_mobile = ((item_heartbeats | length) / 2) | int %}
-      <p class="tna-!--margin-top-xs">
-        <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
-      </p>
-      <ol class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[show_n_heartbeats_on_mobile]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
-        {%- for heartbeat in item_heartbeats %}
-        {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
-        <li class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat.status }}{{- ' tna-heartbeats__item--hide-on-mobile' if loop.index < show_n_heartbeats_on_mobile else '' -}}" title="{{ heartbeat.time | pretty_date }} (UTC): {{ heartbeat_item_data.title }}">
-          <time datetime="{{ heartbeat.time }}Z">{{ heartbeat.time | pretty_date }} (UTC)</time>: {{ heartbeat_item_data.title }}
-        </li>
-        {%- endfor %}
-      </ol>
-      <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
-        <dt>Last updated</dt>
-        <dd>
-          <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
-        </dd>
-        
-        {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
-        {%- if item_last_24h_uptime %}
-        <dt>Uptime over the last 24 hours</dt>
-        <dd data-uptime="{{ item_last_24h_uptime * 100 }}">{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
-        {%- endif %}
-
-        {%- set most_recent_incidents = item_heartbeats | previous_incidents %}
-        {%- if most_recent_incidents %}
-        <dt>Recent incidents</dt>
-        <dd>
-          <ol class="tna-ol tna-ul--dashed tna-ul--spaced tna-!--margin-top-xs">
-            {%- for incident in most_recent_incidents %}
-            <li>
-              <strong>{{ incident.status.title }}</strong>
-
-              <br>
-              Started:
-              {%- if incident.has_start %}
-                <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
-              {%- else %}
-                Unsure (no record of start time)
-              {%- endif %}
-
-              {%- if incident.has_end %}
-                <br>
-                Resolved:
-                <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
-              {%- endif %}
-
-              {%- if incident.duration_seconds -%}
-                <br>
-                Duration:
-                <strong>{% if not incident.has_start %}At least {% endif %}{{ incident.duration_seconds | seconds_to_time }}{% if not incident.has_end %} (ongoing){% endif %}</strong>
-              {%- endif %}
-
-            </li>
-            {%- endfor %}
-          </ol>
-        </dd>
-        {%- endif %}
-
-        {%- if most_recent_item_heartbeat.msg %}
-        <dt>Last message</dt>
-        <dd>{{ most_recent_item_heartbeat.msg }}</dd>
-        {%- endif %}
-      </dl>
-    </div>
-    {%- endif %}
-    {%- endfor %}
-    {%- endfor %}
-    
-    <div class="tna-button-group">
-      {{ tnaButton({
-        'text': 'Back to top',
-        'href': '#top',
-        'icon': 'arrow-up',
-        'small': True,
-        'plain': True
-      }) }}
+      
+      <div class="tna-button-group">
+        {{ tnaButton({
+          'text': 'Back to top',
+          'href': '#top',
+          'icon': 'arrow-up',
+          'small': True,
+          'plain': True
+        }) }}
+      </div>
     </div>
   </div>
 </div>

@@ -6,6 +6,7 @@
 
 {%- set theme = request.cookies.get('theme') or 'system' -%}
 {%- set theme = 'light' -%}
+{%- set htmlClasses = 'tna-template--padded' if 'refresh' in request.args -%}
 {%- set htmlAttributes = dict((htmlAttributes or {}), **{
   'data-tna-cookies-domain': app_config.COOKIE_DOMAIN or ''
 }) -%}

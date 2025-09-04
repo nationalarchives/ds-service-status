@@ -82,8 +82,7 @@
       {%- endif %}
 
       {% if monitor_children | length %}
-      <hr class="tna-!--margin-top-xl">
-
+      <hr class="tna-!--margin-top-l">
       {%- for child in monitor_children %}
         <h2 class="tna-heading-l" id="monitor-{{ child.name | slugify }}">{{ child.name }}</h2>
 

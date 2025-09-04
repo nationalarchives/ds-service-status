@@ -3,7 +3,7 @@ import os
 from uptime_kuma_api import UptimeKumaApi
 
 if uptime_kuma_url := os.environ.get("UPTIME_KUMA_URL", ""):
-    with UptimeKumaApi() as api:
+    with UptimeKumaApi(uptime_kuma_url) as api:
         username = input("Username: ")
         password = input("Password: ")
         otp_code = input("OTP code: ")

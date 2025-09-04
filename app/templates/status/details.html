@@ -3,6 +3,7 @@
 {%- from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs -%}
 {%- from 'components/button/macro.html' import tnaButton -%}
 {%- from 'components/sidebar/macro.html' import tnaSidebar -%}
+{%- from 'components/warning/macro.html' import tnaWarning -%}
 {%- from 'status/macros/incidents_table.html' import incidents_table -%}
 
 {%- set pageTitle = 'Details for ' ~ monitor.name -%}
@@ -54,6 +55,11 @@
       <p>
         <small>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></small>
       </p>
+
+      {{ tnaWarning({
+        'headingLevel': 2,
+        'body': 'This is a new service and the data provided may not be accurate.'
+      }) }}
 
       {%- if monitor.type == MonitorType.GROUP %}
       <table class="tna-table">

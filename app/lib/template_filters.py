@@ -229,4 +229,4 @@ def time_ago(s):
 def pretty_percentage(f):
     if f is None:
         return ""
-    return f"{(round(f * 1000) / 10):g}%"
+    return f"{(round(f * 10000) / 100):g}%"

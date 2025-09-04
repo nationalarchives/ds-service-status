@@ -24,7 +24,7 @@
         {%- if incident.has_end %}
         <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
         {%- else %}
-        <em>Ongoing</em>
+        &mdash;
         {%- endif %}
       </td>
       <td class="tna-table__cell">

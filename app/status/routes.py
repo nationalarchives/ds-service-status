@@ -61,9 +61,11 @@ def details(monitor_id):
             groups = status_page.get("publicGroupList", [])
             for list in groups:
                 monitorList = list.get("monitorList", [])
-                if any(m["id"] == monitor_id for m in monitorList):
-                    id_in_list = True
-                    break
+                for monitor in monitorList:
+                    if monitor["id"] == monitor_id:
+                        status_page_monitor_details = monitor
+                        id_in_list = True
+                        break
             if not id_in_list:
                 return render_template("errors/page_not_found.html"), 404
 
@@ -84,6 +86,7 @@ def details(monitor_id):
 
             return render_template(
                 "status/details.html",
+                status_page_monitor_details=status_page_monitor_details,
                 monitor=monitor,
                 monitor_children=monitor_children,
                 MonitorType=MonitorType,

@@ -44,9 +44,9 @@
       {%- if monitor.description %}
       <p class="tna-scene-setter">{{ monitor.description }}</p>
       {%- endif %}
-      {%- if monitor.url and monitor.url != 'https://' %}
+      {%- if status_page_monitor_details.url %}
       <p>
-        <a href="{{ monitor.url }}">{{ monitor.url }}</a>
+        <a href="{{ status_page_monitor_details.url }}">{{ status_page_monitor_details.url }}</a>
       </p>
       {%- endif %}
       <p>Showing data for the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>

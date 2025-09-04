@@ -72,7 +72,7 @@ class Production(Features):
 
 
 class Staging(Production):
-    CACHE_DEFAULT_TIMEOUT = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "60"))
+    CACHE_DEFAULT_TIMEOUT = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "120"))
 
 
 class Develop(Production):

@@ -3,7 +3,7 @@ import os
 from app.lib.api import JSONAPIClient
 from app.lib.cache import cache, cache_key_prefix
 from app.status import bp
-from flask import current_app, redirect, render_template
+from flask import current_app, redirect, render_template, url_for
 from uptime_kuma_api import MonitorType, UptimeKumaApi
 
 
@@ -92,4 +92,4 @@ def details(monitor_id):
                 heartbeat_hours_to_show=heartbeat_hours_to_show,
             )
 
-    return redirect("status.index")
+    return redirect(url_for("status.index"))

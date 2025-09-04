@@ -62,51 +62,53 @@
       }) }}
 
       {%- if monitor.type == MonitorType.GROUP %}
-      <table class="tna-table">
-        <caption class="tna-table__caption">
-          {{ monitor.name }} component uptimes
-        </caption>
-        <thead class="tna-table__head">
-          <tr class="tna-table__row">
-            <th class="tna-table__header">Service</th>
-            <th class="tna-table__header tna-table__header--numeric">24 hour uptime</th>
-            <th class="tna-table__header tna-table__header--numeric">30 day uptime</th>
-            <th class="tna-table__header tna-table__header--numeric">1 year uptime</th>
-          </tr>
-        </thead>
-        <tbody class="tna-table__body">
-          {%- for child in monitor_children %}
-          <tr class="tna-table__row">
-            <th class="tna-table__header">
-              <a href="#monitor-{{ child.name | slugify }}">{{ child.name }}</a>
-            </th>
-            <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.24 * 100 }}%">
-              {{ child.uptime.24 | pretty_percentage }}
-            </td>
-            <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.720 * 100 }}%">
-              {{ child.uptime.720 | pretty_percentage }}
-            </td>
-            <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime['1y'] * 100 }}%">
-              {{ child.uptime['1y'] | pretty_percentage }}
-            </td>
-          </tr>
-          {%- endfor %}
-        </tbody>
-        <tfoot class="tna-table__foot">
-          <tr class="tna-table__row">
-            <th class="tna-table__header">Total</th>
-            <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.24 * 100 }}%">
-              {{ uptime.24 | pretty_percentage }}
-            </td>
-            <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.720 * 100 }}%">
-              {{ uptime.720 | pretty_percentage }}
-            </td>
-            <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime['1y'] * 100 }}%">
-              {{ uptime['1y'] | pretty_percentage }}
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+      <div class="tna-table-wrapper">
+        <table class="tna-table">
+          <caption class="tna-table__caption">
+            {{ monitor.name }} component uptimes
+          </caption>
+          <thead class="tna-table__head">
+            <tr class="tna-table__row">
+              <th class="tna-table__header">Service</th>
+              <th class="tna-table__header tna-table__header--numeric">24 hour uptime</th>
+              <th class="tna-table__header tna-table__header--numeric">30 day uptime</th>
+              <th class="tna-table__header tna-table__header--numeric">1 year uptime</th>
+            </tr>
+          </thead>
+          <tbody class="tna-table__body">
+            {%- for child in monitor_children %}
+            <tr class="tna-table__row">
+              <th class="tna-table__header">
+                <a href="#monitor-{{ child.name | slugify }}">{{ child.name }}</a>
+              </th>
+              <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.24 * 100 }}%">
+                {{ child.uptime.24 | pretty_percentage }}
+              </td>
+              <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.720 * 100 }}%">
+                {{ child.uptime.720 | pretty_percentage }}
+              </td>
+              <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime['1y'] * 100 }}%">
+                {{ child.uptime['1y'] | pretty_percentage }}
+              </td>
+            </tr>
+            {%- endfor %}
+          </tbody>
+          <tfoot class="tna-table__foot">
+            <tr class="tna-table__row">
+              <th class="tna-table__header">Total</th>
+              <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.24 * 100 }}%">
+                {{ uptime.24 | pretty_percentage }}
+              </td>
+              <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.720 * 100 }}%">
+                {{ uptime.720 | pretty_percentage }}
+              </td>
+              <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime['1y'] * 100 }}%">
+                {{ uptime['1y'] | pretty_percentage }}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
       {%- else %}
       {%- set recent_incidents = heartbeats | previous_incidents %}
       <dl class="tna-dl tna-dl--stacked tna-dl--plain">

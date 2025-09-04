@@ -108,18 +108,17 @@
         </tfoot>
       </table>
       {%- else %}
+      {%- set recent_incidents = heartbeats | previous_incidents %}
       <dl class="tna-dl tna-dl--stacked tna-dl--plain">
         <dt>24 hour uptime</dt>
-        <dd>{{ uptime.24 | pretty_percentage }}</dd>
+        <dd title="{{ uptime.24 * 100 }}%">{{ uptime.24 | pretty_percentage }}</dd>
         <dt>30 day uptime</dt>
-        <dd>{{ uptime.720 | pretty_percentage }}</dd>
+        <dd title="{{ uptime.720 * 100 }}%">{{ uptime.720 | pretty_percentage }}</dd>
         <dt>1 year uptime</dt>
-        <dd>{{ uptime['1y'] | pretty_percentage }}</dd>
-      </dl>
-      {%- set recent_incidents = heartbeats | previous_incidents %}
-      {%- if recent_incidents %}
-      <h2 class="tna-heading-l">Incidents</h2>
-      <dl class="tna-dl tna-dl--stacked tna-dl--plain">
+        <dd title="{{ uptime['1y'] * 100 }}%">{{ uptime['1y'] | pretty_percentage }}</dd>
+        <dt>Average response time</dt>
+        <dd title="{{ average_ping }} ms">{{ average_ping | int }} ms</dd>
+        {%- if recent_incidents %}
         <dt>Total incidents</dt>
         <dd>{{ recent_incidents | length }}</dd>
         <dt>Average incident duration</dt>
@@ -130,9 +129,9 @@
         <dt>Last incident</dt>
         <dd>{{ (recent_incidents | first).end.time | time_ago }}</dd>
         {%- endif %}
-        <dt>Average ping</dt>
-        <dd>{{ average_ping | int }} ms</dd>
+        {%- endif %}
       </dl>
+      {%- if recent_incidents %}
       {{ incidents_table(recent_incidents, monitor.name) }}
       {%- else %}
       <p><strong>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</strong></p>
@@ -144,6 +143,15 @@
         <hr class="tna-!--margin-top-l">
 
         <h2 class="tna-heading-l" id="monitor-{{ child.name | slugify }}">{{ child.name }}</h2>
+
+        {%- if child.description %}
+        <p>{{ child.description }}</p>
+        {%- endif %}
+
+        <dl class="tna-dl tna-dl--stacked tna-dl--plain">
+          <dt>Average response time</dt>
+          <dd title="{{ child.average_ping }} ms">{{ child.average_ping | int }} ms</dd>
+        </dl>
 
         {%- set child_recent_incidents = child.heartbeats | previous_incidents %}
         {%- if child_recent_incidents %}
@@ -158,8 +166,6 @@
           <dt>Last incident</dt>
           <dd>{{ (child_recent_incidents | first).end.time | time_ago }}</dd>
           {%- endif %}
-          <dt>Average ping</dt>
-          <dd>{{ child.average_ping | int }} ms</dd>
         </dl>
         {{ incidents_table(child_recent_incidents, child.name) }}
         {%- else %}

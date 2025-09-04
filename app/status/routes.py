@@ -39,7 +39,7 @@ def index():
         current_app.logger.error(f"Failed to render status page: {e}")
         return render_template("errors/api.html"), 502
 
-    jwt_set_up = current_app.config.get("UPTIME_KUMA_JWT", None) is not None
+    jwt_set_up = current_app.config.get("UPTIME_KUMA_JWT", "") is not ""
 
     return render_template(
         "status/index.html", data=data, heartbeats=heartbeats, jwt_set_up=jwt_set_up

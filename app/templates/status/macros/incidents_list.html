@@ -1,0 +1,27 @@
+{% macro incidents_list(most_recent_incidents) %}
+<ol class="tna-ol tna-ul--dashed tna-ul--spaced tna-!--margin-top-xs">
+  {%- for incident in most_recent_incidents %}
+  <li>
+    <strong>{{ incident.status.title }}</strong>
+
+    {%- if incident.has_start %}
+      <br>
+      Started:
+      <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
+    {%- endif %}
+
+    {%- if incident.has_end %}
+      <br>
+      Resolved:
+      <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+    {%- endif %}
+
+    {%- if incident.duration_seconds -%}
+      <br>
+      Duration:
+      <strong>{% if not incident.has_start %}At least {% endif %}{{ incident.duration_seconds | seconds_to_time }}{% if not incident.has_end %} (ongoing){% endif %}</strong>
+    {%- endif %}
+  </li>
+  {%- endfor %}
+</ol>
+{% endmacro %}

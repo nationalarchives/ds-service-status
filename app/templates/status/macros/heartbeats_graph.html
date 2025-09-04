@@ -1,0 +1,10 @@
+{% macro heartbeats_graph(item_heartbeats, tight, show_n_heartbeats_on_mobile) %}
+<ol class="tna-heartbeats{{ ' tna-heartbeats--tight' if tight else '' }}" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[show_n_heartbeats_on_mobile] if show_n_heartbeats_on_mobile else (item_heartbeats | first)).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
+  {%- for heartbeat in item_heartbeats %}
+  {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
+  <li class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat_item_data.status_class }}{{- ' tna-heartbeats__item--hide-on-mobile' if (show_n_heartbeats_on_mobile and (show_n_heartbeats_on_mobile and loop.index < show_n_heartbeats_on_mobile)) else '' -}}" title="{{ heartbeat.time | pretty_date }} (UTC): {{ heartbeat_item_data.title }}">
+    <time datetime="{{ heartbeat.time }}Z">{{ heartbeat.time | pretty_date }} (UTC)</time>: {{ heartbeat_item_data.title }}
+  </li>
+  {%- endfor %}
+</ol>
+{% endmacro %}

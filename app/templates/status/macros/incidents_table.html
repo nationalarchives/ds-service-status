@@ -1,0 +1,41 @@
+{% macro incidents_table(most_recent_incidents, monitor_name) %}
+<table class="tna-table">
+  <caption class="tna-table__caption">
+    Recent incidents for {{ monitor_name }} (most recent first)
+  </caption>
+  <thead class="tna-table__head">
+    <tr class="tna-table__row">
+      <th class="tna-table__header">Start</th>
+      <th class="tna-table__header">End</th>
+      <th class="tna-table__header">Duration</th>
+    </tr>
+  </thead>
+  <tbody class="tna-table__body">
+    {%- for incident in most_recent_incidents %}
+    <tr class="tna-table__row">
+      <td class="tna-table__cell">
+        {%- if incident.has_start %}
+        <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
+        {%- else %}
+        <em>Unknown</em>
+        {%- endif %}
+      </td>
+      <td class="tna-table__cell">
+        {%- if incident.has_end %}
+        <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+        {%- else %}
+        <em>Ongoing</em>
+        {%- endif %}
+      </td>
+      <td class="tna-table__cell">
+        {%- if incident.duration_seconds -%}
+          {% if not incident.has_start %}At least{% endif %}
+          {{ incident.duration_seconds | seconds_to_time }}
+          {% if not incident.has_end %} (ongoing){% endif %}
+        {%- endif %}
+      </td>
+    </tr>
+    {%- endfor %}
+  </tbody>
+</table>
+{% endmacro %}

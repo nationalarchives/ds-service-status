@@ -1,17 +1,14 @@
 {% extends 'base.html' %}
 
+{%- from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs -%}
 {%- from 'components/button/macro.html' import tnaButton -%}
-{%- from 'components/checkboxes/macro.html' import tnaCheckboxes -%}
 {%- from 'components/skip-link/macro.html' import tnaSkipLink -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
-
-{#
-{%- set htmlAttributes = {
-  'data-ga4id': data.config.googleAnalyticsId or ''
-} -%}
-#}
+{%- from 'status/macros/heartbeats_graph.html' import heartbeats_graph -%}
+{%- from 'status/macros/incidents_list.html' import incidents_list -%}
 
 {%- set pageTitle = data.config.title or 'Service status' -%}
+{%- set themeAccent = 'blue' -%}
 
 {% block head %}
 {{ super() }}
@@ -21,7 +18,6 @@
     <meta http-equiv="refresh" content="{{ app_config.STATUS_PAGE_REFRESH_SECONDS + 5 }}">
     {%- endif %}
 {% endblock %}
-
 
 {% block skipLink %}
 {# TODO: Enable when skip link doesn't prefix the href with a hash
@@ -35,6 +31,21 @@
 {{ super() }}
 {% endblock %}
 
+{% block header %}
+{{ super() }}
+    <div class="tna-container tna-!--padding-top-s">
+      <div class="tna-column tna-column--full">
+        {{ tnaBreadcrumbs({
+          'items': [
+            {
+              'text': 'Home',
+              'href': '/'
+            }
+          ]
+        }) }}
+      </div>
+    </div>
+{% endblock %}
 
 {% block content %}
 <div class="tna-refresh-banner"{{ '' if 'refresh' in request.args else ' hidden' }}>
@@ -177,58 +188,24 @@
         <p class="tna-!--margin-top-xs">
           <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
         </p>
-        <ol class="tna-heartbeats" data-oldest-heartbeat="{{ (item_heartbeats | first).time | time_ago }}" data-oldest-heartbeat-mobile="{{ (item_heartbeats[show_n_heartbeats_on_mobile]).time | time_ago }}" data-newest-heartbeat="{{ (item_heartbeats | last).time | time_ago }}">
-          {%- for heartbeat in item_heartbeats %}
-          {%- set heartbeat_item_data = heartbeat.status | pretty_uptime_kuma_status %}
-          <li class="tna-heartbeats__item tna-heartbeats__item--status-{{ heartbeat.status }}{{- ' tna-heartbeats__item--hide-on-mobile' if loop.index < show_n_heartbeats_on_mobile else '' -}}" title="{{ heartbeat.time | pretty_date }} (UTC): {{ heartbeat_item_data.title }}">
-            <time datetime="{{ heartbeat.time }}Z">{{ heartbeat.time | pretty_date }} (UTC)</time>: {{ heartbeat_item_data.title }}
-          </li>
-          {%- endfor %}
-        </ol>
+        {{ heartbeats_graph(item_heartbeats, False, show_n_heartbeats_on_mobile) }}
         <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
-          <dt>Last updated</dt>
+          <dt>Last checked</dt>
           <dd>
             <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
           </dd>
           
-          {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
+          <!-- {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
           {%- if item_last_24h_uptime %}
           <dt>Uptime over the last 24 hours</dt>
           <dd data-uptime="{{ item_last_24h_uptime * 100 }}">{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
-          {%- endif %}
+          {%- endif %} -->
 
-          {%- set most_recent_incidents = item_heartbeats | previous_incidents %}
-          {%- if most_recent_incidents %}
+          {%- set recent_incidents = item_heartbeats | previous_incidents %}
+          {%- if recent_incidents %}
           <dt>Recent incidents</dt>
           <dd>
-            <ol class="tna-ol tna-ul--dashed tna-ul--spaced tna-!--margin-top-xs">
-              {%- for incident in most_recent_incidents %}
-              <li>
-                <strong>{{ incident.status.title }}</strong>
-
-                <br>
-                Started:
-                {%- if incident.has_start %}
-                  <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
-                {%- else %}
-                  Unsure (no record of start time)
-                {%- endif %}
-
-                {%- if incident.has_end %}
-                  <br>
-                  Resolved:
-                  <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
-                {%- endif %}
-
-                {%- if incident.duration_seconds -%}
-                  <br>
-                  Duration:
-                  <strong>{% if not incident.has_start %}At least {% endif %}{{ incident.duration_seconds | seconds_to_time }}{% if not incident.has_end %} (ongoing){% endif %}</strong>
-                {%- endif %}
-
-              </li>
-              {%- endfor %}
-            </ol>
+            {{ incidents_list(recent_incidents) }}
           </dd>
           {%- endif %}
 
@@ -237,6 +214,12 @@
           <dd>{{ most_recent_item_heartbeat.msg }}</dd>
           {%- endif %}
         </dl>
+
+        {%- if jwt_set_up %}
+        <p class="tna-!--margin-top-xs">
+          <small>See <a href="{{ url_for('status.details', monitor_id=item.id) }}">more details for {{ item.name }}</a></small>
+        </p>
+        {%- endif %}
       </div>
       {%- endif %}
       {%- endfor %}

@@ -60,7 +60,8 @@ class Production(Features):
     CACHE_DIR: str = os.environ.get("CACHE_DIR", "/tmp")
     CACHE_REDIS_URL: str = os.environ.get("CACHE_REDIS_URL", "")
 
-    UPTIME_KUMA_API_URL: str = os.environ.get("UPTIME_KUMA_API_URL", "").rstrip("/")
+    UPTIME_KUMA_URL: str = os.environ.get("UPTIME_KUMA_URL", "").rstrip("/")
+    UPTIME_KUMA_JWT: str = os.environ.get("UPTIME_KUMA_JWT", "")
     UPTIME_KUMA_STATUS_PAGE_SLUG: str = os.environ.get(
         "UPTIME_KUMA_STATUS_PAGE_SLUG", ""
     )

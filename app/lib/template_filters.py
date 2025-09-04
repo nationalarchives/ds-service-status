@@ -3,6 +3,7 @@ import math
 import re
 
 from markdown_it import MarkdownIt
+from uptime_kuma_api import MonitorStatus
 
 
 def slugify(s):
@@ -35,36 +36,41 @@ def pretty_date(s):
 
 
 def pretty_uptime_kuma_status(s):
-    if s == 0:
+    if s == MonitorStatus(0):
         return {
             "title": "Issues detected",
             "accent_colour": "tna-accent-pink",
             "fontawesome_icon": "fa-circle-xmark",
+            "status_class": "down",
         }
-    if s == 1:
+    if s == MonitorStatus(1):
         return {
             "title": "No issues detected",
             "accent_colour": "tna-accent-green",
             "fontawesome_icon": "fa-circle-check",
+            "status_class": "up",
         }
-    if s == 2:
+    if s == MonitorStatus(2):
         return {
             "title": "Pending…",
             "accent_colour": "tna-accent-yellow",
             "fontawesome_icon": "fa-hourglass-half",
+            "status_class": "pending",
         }
-    if s == 3:
+    if s == MonitorStatus(3):
         return {
             "title": "Planned maintenance",
             "accent_colour": "tna-accent-blue",
             "fontawesome_icon": "fa-wrench",
+            "status_class": "maintenance",
         }
     return {"title": "Unknown", "accent_colour": "", "fontawesome_icon": "fa-question"}
 
 
 def previous_incidents(heartbeats):
     if not heartbeats or not any(
-        heartbeat.get("status") == 0 for heartbeat in heartbeats
+        heartbeat.get("status") == 0 or heartbeat.get("status") == MonitorStatus.DOWN
+        for heartbeat in heartbeats
     ):
         return []
     heartbeats = sorted(heartbeats, key=lambda x: x.get("time", ""), reverse=True)
@@ -73,17 +79,22 @@ def previous_incidents(heartbeats):
     end = None
     has_start = False
     has_end = False
-    is_ongoing_incident = heartbeats[0].get("status") == 0
+    is_ongoing_incident = heartbeats[0].get("status") == MonitorStatus(0)
     for index, heartbeat in enumerate(heartbeats):
         if index == 0 and is_ongoing_incident:
             end = heartbeat
-        elif index == len(heartbeats) - 1 and heartbeat.get("status") == 0:
+        elif index == len(heartbeats) - 1 and heartbeat.get("status") == MonitorStatus(
+            0
+        ):
             start = heartbeat
         if end:
-            if heartbeat.get("status") != 0:
+            print("End found:", end)
+            print(heartbeat.get("status"))
+            if heartbeat.get("status") != MonitorStatus(0):
                 start = heartbeats[index - 1] if index > 0 else heartbeat
                 has_start = True
-        elif heartbeat.get("status") == 0:
+        elif heartbeat.get("status") == MonitorStatus(0):
+            print("No end yet, but found a DOWN heartbeat:", heartbeat)
             end = heartbeats[index - 1] if index > 0 else heartbeat
             has_end = True
         if start and end:
@@ -119,6 +130,19 @@ def previous_incidents(heartbeats):
             has_start = False
             has_end = False
     return incidents
+
+
+def average_incident_time(incidents):
+    if not incidents:
+        return 0
+    total = sum(incident.get("duration_seconds", 0) for incident in incidents)
+    return total / len(incidents)
+
+
+def longest_incident_time(incidents):
+    if not incidents:
+        return 0
+    return max(incident.get("duration_seconds", 0) for incident in incidents)
 
 
 def seconds_to_time(s):

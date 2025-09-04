@@ -68,6 +68,14 @@ $refresh-banner-height: 2.5rem;
   &--tiny {
     @include typography.font-size(14);
   }
+
+  &--stacked#{&}--plain {
+    > dd {
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
 }
 
 .tna-monitor-summary-wrapper {
@@ -184,6 +192,7 @@ $refresh-banner-height: 2.5rem;
   padding-top: spacing.space(1.25);
 
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 1px;
 
@@ -228,21 +237,39 @@ $refresh-banner-height: 2.5rem;
     font-size: 0;
     flex: 1;
 
-    &--status-0 {
+    &--status-down {
       @include colour.pink-accent;
     }
 
-    &--status-1 {
+    &--status-up {
       @include colour.green-accent;
     }
 
-    &--status-2 {
+    &--status-pending {
       @include colour.yellow-accent;
     }
 
-    &--status-3 {
+    &--status-maintenance {
       @include colour.blue-accent;
     }
+
+    // &--status-up + &--status-down,
+    // &--status-pending + &--status-down {
+    //   &::after {
+    //     content: "❌";
+
+    //     width: 1rem;
+
+    //     position: absolute;
+    //     top: 100%;
+    //     left: 50%;
+    //     z-index: 2;
+
+    //     transform: translateX(-50%);
+
+    //     @include typography.font-size(16);
+    //   }
+    // }
   }
 
   @include media.on-mobile {
@@ -255,5 +282,9 @@ $refresh-banner-height: 2.5rem;
         display: none;
       }
     }
+  }
+
+  &--tight {
+    gap: 0;
   }
 }

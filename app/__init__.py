@@ -4,6 +4,8 @@ from app.lib.cache import cache
 from app.lib.context_processor import cookie_preference, now_iso_8601, now_pretty
 from app.lib.talisman import talisman
 from app.lib.template_filters import (
+    average_incident_time,
+    longest_incident_time,
     markdown,
     pretty_date,
     pretty_uptime_kuma_status,
@@ -83,10 +85,12 @@ def create_app(config_class):
         ]
     )
 
-    app.add_template_filter(previous_incidents)
+    app.add_template_filter(average_incident_time)
+    app.add_template_filter(longest_incident_time)
     app.add_template_filter(markdown)
     app.add_template_filter(pretty_date)
     app.add_template_filter(pretty_uptime_kuma_status)
+    app.add_template_filter(previous_incidents)
     app.add_template_filter(seconds_to_time)
     app.add_template_filter(slugify)
     app.add_template_filter(time_ago)

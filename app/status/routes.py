@@ -39,7 +39,7 @@ def index():
         current_app.logger.error(f"Failed to render status page: {e}")
         return render_template("errors/api.html"), 502
 
-    jwt_set_up = current_app.config.get("UPTIME_KUMA_JWT", "") is not ""
+    jwt_set_up = current_app.config.get("UPTIME_KUMA_JWT", "") != ""
 
     return render_template(
         "status/index.html", data=data, heartbeats=heartbeats, jwt_set_up=jwt_set_up
@@ -53,46 +53,56 @@ def details(monitor_id):
     heartbeat_hours_to_show = 720  # 30 days
 
     if jwt := current_app.config.get("UPTIME_KUMA_JWT"):
-        with UptimeKumaApi(uptime_kuma_url) as api:
-            api.login_by_token(jwt)
+        try:
+            with UptimeKumaApi(uptime_kuma_url) as api:
+                api.login_by_token(jwt)
 
-            status_page = api.get_status_page(uptime_kuma_status_page_slug)
-            id_in_list = False
-            groups = status_page.get("publicGroupList", [])
-            for list in groups:
-                monitorList = list.get("monitorList", [])
-                for monitor in monitorList:
-                    if monitor["id"] == monitor_id:
-                        status_page_monitor_details = monitor
-                        id_in_list = True
-                        break
-            if not id_in_list:
-                return render_template("errors/page_not_found.html"), 404
+                status_page = api.get_status_page(uptime_kuma_status_page_slug)
+                id_in_list = False
+                groups = status_page.get("publicGroupList", [])
+                for list in groups:
+                    monitorList = list.get("monitorList", [])
+                    for monitor in monitorList:
+                        if monitor["id"] == monitor_id:
+                            status_page_monitor_details = monitor
+                            id_in_list = True
+                            break
+                if not id_in_list:
+                    return render_template("errors/page_not_found.html"), 404
 
-            monitors = api.get_monitors()
-            monitor = next((m for m in monitors if m["id"] == monitor_id), None)
-            monitor_children = []
-            for child in monitor.get("childrenIDs", []):
-                child = next((m for m in monitors if m["id"] == child), None)
-                if child:
-                    monitor_children.append(child)
-            for child in monitor_children:
-                child["heartbeats"] = api.get_monitor_beats(
-                    child["id"], heartbeat_hours_to_show
+                monitors = api.get_monitors()
+                pings = api.avg_ping()
+                uptimes = api.uptime()
+                monitor = next((m for m in monitors if m["id"] == monitor_id), None)
+                monitor_children = []
+                for child in monitor.get("childrenIDs", []):
+                    child = next((m for m in monitors if m["id"] == child), None)
+                    if child:
+                        monitor_children.append(child)
+                for child in monitor_children:
+                    child["heartbeats"] = api.get_monitor_beats(
+                        child["id"], heartbeat_hours_to_show
+                    )
+                    child["average_ping"] = pings.get(child["id"], None)
+                    child["uptime"] = uptimes.get(child["id"], None)
+
+                uptime = uptimes.get(monitor_id, {})
+                heartbeats = api.get_monitor_beats(monitor_id, heartbeat_hours_to_show)
+                average_ping = pings.get(monitor_id, None)
+
+                return render_template(
+                    "status/details.html",
+                    status_page_monitor_details=status_page_monitor_details,
+                    monitor=monitor,
+                    monitor_children=monitor_children,
+                    MonitorType=MonitorType,
+                    uptime=uptime,
+                    heartbeats=heartbeats,
+                    heartbeat_hours_to_show=heartbeat_hours_to_show,
+                    average_ping=average_ping,
                 )
-
-            uptimes = api.uptime().get(monitor_id, {})
-            heartbeats = api.get_monitor_beats(monitor_id, heartbeat_hours_to_show)
-
-            return render_template(
-                "status/details.html",
-                status_page_monitor_details=status_page_monitor_details,
-                monitor=monitor,
-                monitor_children=monitor_children,
-                MonitorType=MonitorType,
-                uptimes=uptimes,
-                heartbeats=heartbeats,
-                heartbeat_hours_to_show=heartbeat_hours_to_show,
-            )
+        except Exception as e:
+            current_app.logger.error(f"Failed to render status page: {e}")
+            return render_template("errors/api.html"), 502
 
     return redirect(url_for("status.index"))

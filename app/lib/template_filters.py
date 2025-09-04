@@ -88,13 +88,10 @@ def previous_incidents(heartbeats):
         ):
             start = heartbeat
         if end:
-            print("End found:", end)
-            print(heartbeat.get("status"))
             if heartbeat.get("status") != MonitorStatus(0):
                 start = heartbeats[index - 1] if index > 0 else heartbeat
                 has_start = True
         elif heartbeat.get("status") == MonitorStatus(0):
-            print("No end yet, but found a DOWN heartbeat:", heartbeat)
             end = heartbeats[index - 1] if index > 0 else heartbeat
             has_end = True
         if start and end:
@@ -115,12 +112,12 @@ def previous_incidents(heartbeats):
                         ).total_seconds()
                     ),
                     "status": pretty_uptime_kuma_status(
-                        start.get("status")
+                        MonitorStatus(start.get("status"))
                         if start
                         else (
-                            heartbeats[-1].get("status")
+                            MonitorStatus(heartbeats[-1].get("status"))
                             if index == len(heartbeats) - 1 and not has_start
-                            else (end.get("status") if end else None)
+                            else (MonitorStatus(end.get("status")) if end else None)
                         )
                     ),
                 }
@@ -227,3 +224,9 @@ def time_ago(s):
         return relative_time(dt)
     except ValueError:
         return s
+
+
+def pretty_percentage(f):
+    if f is None:
+        return ""
+    return f"{(round(f * 1000) / 10):g}%"

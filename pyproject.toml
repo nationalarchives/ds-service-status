@@ -15,6 +15,7 @@ tna-frontend-jinja = "0.23.0"
 flask-talisman = "^1.1.0"
 markdown-it-py = "^3.0.0"
 uptime-kuma-api = "^1.2.1"
+sentry-sdk = {extras = ["flask"], version = "^2.36.0"}
 
 [tool.poetry.group.dev]
 optional = true

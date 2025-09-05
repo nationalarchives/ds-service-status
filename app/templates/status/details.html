@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-{%- from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs -%}
 {%- from 'components/button/macro.html' import tnaButton -%}
 {%- from 'components/sidebar/macro.html' import tnaSidebar -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
@@ -18,18 +17,9 @@
 {{ super() }}
     <div class="tna-container tna-!--padding-top-s">
       <div class="tna-column tna-column--full">
-        {{ tnaBreadcrumbs({
-          'items': [
-            {
-              'text': 'Home',
-              'href': '/'
-            },
-            {
-              'text': 'Service status',
-              'href': url_for('status.index')
-            }
-          ]
-        }) }}
+        <a href="{{ url_for('status.index') }}" class="tna-back-link">
+          <span class="tna-back-link__inner">Service status</span>
+        </a>
       </div>
     </div>
 {% endblock %}
@@ -111,7 +101,7 @@
       </div>
       {%- else %}
       {%- set recent_incidents = heartbeats | previous_incidents %}
-      <dl class="tna-dl tna-dl--stacked tna-dl--plain">
+      <dl class="tna-dl tna-dl--50-50">
         <dt>24 hour uptime</dt>
         <dd title="{{ uptime.24 * 100 }}%">{{ uptime.24 | pretty_percentage }}</dd>
         <dt>30 day uptime</dt>
@@ -120,17 +110,31 @@
         <dd title="{{ uptime['1y'] * 100 }}%">{{ uptime['1y'] | pretty_percentage }}</dd>
         <dt>Average response time</dt>
         <dd title="{{ average_ping }} ms">{{ average_ping | int }} ms</dd>
-        {%- if recent_incidents %}
+        
+        {%- set incidents = recent_incidents | incident_count %}
+        {%- if incidents %}
         <dt>Total incidents</dt>
-        <dd>{{ recent_incidents | length }}</dd>
+        <dd>{{ incidents }}</dd>
+
+        <dt>Total downtime</dt>
+        <dd>{{ recent_incidents | total_incident_time | int | seconds_to_time }}</dd>
+
         <dt>Average incident duration</dt>
         <dd>{{ recent_incidents | average_incident_time | int | seconds_to_time }}</dd>
+        
         <dt>Longest incident</dt>
         <dd>{{ recent_incidents | longest_incident_time | int | seconds_to_time }}</dd>
+        
         {%- if (recent_incidents | first).end %}
         <dt>Last incident</dt>
         <dd>{{ (recent_incidents | first).end.time | time_ago }}</dd>
         {%- endif %}
+        {%- endif %}
+        
+        {%- set total_maintenance = recent_incidents | total_maintenance_time | int %}
+        {%- if total_maintenance %}
+        <dt>Total maintenance time</dt>
+        <dd>{{ total_maintenance | seconds_to_time }}</dd>
         {%- endif %}
       </dl>
       {%- if recent_incidents %}
@@ -157,16 +161,31 @@
 
         {%- set child_recent_incidents = child.heartbeats | previous_incidents %}
         {%- if child_recent_incidents %}
-        <dl class="tna-dl tna-dl--stacked tna-dl--plain">
+        {%- set incidents = child_recent_incidents | incident_count %}
+        <dl class="tna-dl tna-dl--50-50">
+          {%- if incidents %}
           <dt>Total incidents</dt>
-          <dd>{{ child_recent_incidents | length }}</dd>
+          <dd>{{ incidents }}</dd>
+
+          <dt>Total downtime (excluding maintenance)</dt>
+          <dd>{{ child_recent_incidents | total_incident_time | int | seconds_to_time }}</dd>
+
           <dt>Average incident duration</dt>
           <dd>{{ child_recent_incidents | average_incident_time | int | seconds_to_time }}</dd>
+          
           <dt>Longest incident</dt>
           <dd>{{ child_recent_incidents | longest_incident_time | int | seconds_to_time }}</dd>
+          
           {%- if (child_recent_incidents | first).end %}
           <dt>Last incident</dt>
           <dd>{{ (child_recent_incidents | first).end.time | time_ago }}</dd>
+          {%- endif %}
+          {%- endif %}
+          
+          {%- set total_maintenance = child_recent_incidents | total_maintenance_time | int %}
+          {%- if total_maintenance %}
+          <dt>Total maintenance time</dt>
+          <dd>{{ total_maintenance | seconds_to_time }}</dd>
           {%- endif %}
         </dl>
         {{ incidents_table(child_recent_incidents, child.name) }}

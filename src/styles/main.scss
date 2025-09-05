@@ -54,6 +54,37 @@ $refresh-banner-height: 2.5rem;
   }
 }
 
+.tna-back-link {
+  display: inline-flex;
+  gap: spacing.space(0.5);
+
+  &,
+  &:visited {
+    @include colour.colour-font("font-base");
+  }
+
+  &,
+  &:hover,
+  &:focus-visible {
+    text-decoration: none;
+  }
+
+  &__inner {
+    text-decoration: underline;
+    @include typography.interactable-text-decoration;
+  }
+
+  &:hover &__inner,
+  &:focus-visible &__inner {
+    @include typography.interacted-text-decoration;
+  }
+
+  &::before {
+    content: "\2039";
+    content: "\2039" / "";
+  }
+}
+
 .tna-warning {
   p {
     margin-top: spacing.space(0.5);
@@ -73,6 +104,30 @@ $refresh-banner-height: 2.5rem;
     > dd {
       &:last-child {
         padding-bottom: 0;
+      }
+    }
+  }
+
+  &--50-50 {
+    > dt,
+    > dd {
+      width: 50%;
+    }
+
+    @include media.on-tiny {
+      > dt,
+      > dd {
+        width: 100%;
+      }
+
+      > dt {
+        --background: var(--background-tint);
+
+        @include colour.colour-background("background");
+      }
+
+      > dd {
+        background-color: transparent !important;
       }
     }
   }

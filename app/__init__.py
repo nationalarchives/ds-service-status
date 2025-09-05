@@ -5,6 +5,7 @@ from app.lib.context_processor import cookie_preference, now_iso_8601, now_prett
 from app.lib.talisman import talisman
 from app.lib.template_filters import (
     average_incident_time,
+    incident_count,
     longest_incident_time,
     markdown,
     pretty_date,
@@ -14,6 +15,8 @@ from app.lib.template_filters import (
     seconds_to_time,
     slugify,
     time_ago,
+    total_incident_time,
+    total_maintenance_time,
 )
 from flask import Flask
 from jinja2 import ChoiceLoader, PackageLoader
@@ -87,6 +90,7 @@ def create_app(config_class):
     )
 
     app.add_template_filter(average_incident_time)
+    app.add_template_filter(incident_count)
     app.add_template_filter(longest_incident_time)
     app.add_template_filter(markdown)
     app.add_template_filter(pretty_date)
@@ -96,6 +100,8 @@ def create_app(config_class):
     app.add_template_filter(seconds_to_time)
     app.add_template_filter(slugify)
     app.add_template_filter(time_ago)
+    app.add_template_filter(total_incident_time)
+    app.add_template_filter(total_maintenance_time)
 
     @app.context_processor
     def context_processor():

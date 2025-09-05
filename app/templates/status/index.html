@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-{%- from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs -%}
 {%- from 'components/button/macro.html' import tnaButton -%}
 {%- from 'components/skip-link/macro.html' import tnaSkipLink -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
@@ -31,22 +30,6 @@
 {{ super() }}
 {% endblock %}
 
-{% block header %}
-{{ super() }}
-    <div class="tna-container tna-!--padding-top-s tna-!--padding-bottom-s">
-      <div class="tna-column tna-column--full">
-        {{ tnaBreadcrumbs({
-          'items': [
-            {
-              'text': 'Home',
-              'href': '/'
-            }
-          ]
-        }) }}
-      </div>
-    </div>
-{% endblock %}
-
 {% block content %}
 <div class="tna-refresh-banner"{{ '' if 'refresh' in request.args else ' hidden' }}>
   <div class="tna-refresh-banner__content tna-accent-blue tna-background-accent">
@@ -63,7 +46,7 @@
   </div>
 </div>
 
-<div class="tna-!--padding-top-m">
+<div class="tna-!--padding-top-l">
   <div class="tna-container">
     <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny">
       <h1 class="tna-heading-xl">{{ pageTitle }}</h1>

@@ -47,7 +47,7 @@ def index():
     )
 
 
-@bp.route("/<string:monitor_slug>")
+@bp.route("/<string:monitor_slug>/")
 @cache.cached(key_prefix=cache_key_prefix)
 def details(monitor_slug):
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()

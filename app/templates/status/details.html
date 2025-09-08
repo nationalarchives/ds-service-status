@@ -25,209 +25,207 @@
 {% endblock %}
 
 {% block content %}
-<div class="tna-!--padding-top-s tna-!--padding-bottom-l">
-  <div class="tna-container">
-    {%- set has_child_monitors = monitor_children | length > 0 %}
-    <div class="tna-column tna-column--width-3-4 tna-column--full-small tna-column--full-tiny tna-!--padding-top-m" id="overview">
-      <hgroup class="tna-hgroup-xl">
-        <p class="tna-hgroup__supertitle">Service</p>
-        <h1 class="tna-hgroup__title">{{ monitor.name }}</h1>
-      </hgroup>
-      {%- if monitor.description %}
-      <p class="tna-scene-setter">{{ monitor.description }}</p>
-      {%- endif %}
-      {%- if status_page_monitor_details.url %}
-      <p>
-        <a href="{{ status_page_monitor_details.url }}">{{ status_page_monitor_details.url }}</a>
-      </p>
-      {%- endif %}
-      <p>Showing data for the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
-      <p>
-        <small>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></small>
-      </p>
+<div class="tna-container tna-!--padding-top-s">
+  {%- set has_child_monitors = monitor_children | length > 0 %}
+  <div class="tna-column tna-column--width-3-4 tna-column--full-small tna-column--full-tiny tna-!--padding-top-m" id="overview">
+    <hgroup class="tna-hgroup-xl">
+      <p class="tna-hgroup__supertitle">Service</p>
+      <h1 class="tna-hgroup__title">{{ monitor.name }}</h1>
+    </hgroup>
+    {%- if monitor.description %}
+    <p class="tna-scene-setter">{{ monitor.description }}</p>
+    {%- endif %}
+    {%- if status_page_monitor_details.url %}
+    <p>
+      <a href="{{ status_page_monitor_details.url }}">{{ status_page_monitor_details.url }}</a>
+    </p>
+    {%- endif %}
+    <p>Showing data for the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
+    <p>
+      <small>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></small>
+    </p>
 
-      {{ tnaWarning({
-        'headingLevel': 2,
-        'body': 'This is a new service and the data provided may not be accurate.'
-      }) }}
+    {{ tnaWarning({
+      'headingLevel': 2,
+      'body': 'This is a new service and the data provided may not be accurate.'
+    }) }}
 
-      {%- if monitor.type == MonitorType.GROUP %}
-      <div class="tna-table-wrapper">
-        <table class="tna-table">
-          <caption class="tna-table__caption">
-            {{ monitor.name }} component uptimes
-          </caption>
-          <thead class="tna-table__head">
-            <tr class="tna-table__row">
-              <th class="tna-table__header">Service</th>
-              <th class="tna-table__header tna-table__header--numeric">24 hour uptime</th>
-              <th class="tna-table__header tna-table__header--numeric">30 day uptime</th>
-              <th class="tna-table__header tna-table__header--numeric">1 year uptime</th>
-            </tr>
-          </thead>
-          <tbody class="tna-table__body">
-            {%- for child in monitor_children %}
-            <tr class="tna-table__row">
-              <th class="tna-table__header">
-                <a href="#monitor-{{ child.name | slugify }}">{{ child.name }}</a>
-              </th>
-              <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.24 * 100 }}%">
-                {{ child.uptime.24 | pretty_percentage }}
-              </td>
-              <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.720 * 100 }}%">
-                {{ child.uptime.720 | pretty_percentage }}
-              </td>
-              <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime['1y'] * 100 }}%">
-                {{ child.uptime['1y'] | pretty_percentage }}
-              </td>
-            </tr>
-            {%- endfor %}
-          </tbody>
-          <tfoot class="tna-table__foot">
-            <tr class="tna-table__row">
-              <th class="tna-table__header">Total</th>
-              <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.24 * 100 }}%">
-                {{ uptime.24 | pretty_percentage }}
-              </td>
-              <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.720 * 100 }}%">
-                {{ uptime.720 | pretty_percentage }}
-              </td>
-              <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime['1y'] * 100 }}%">
-                {{ uptime['1y'] | pretty_percentage }}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      {%- else %}
-      {%- set recent_incidents = heartbeats | previous_incidents %}
-      <dl class="tna-dl tna-dl--50-50">
-        <dt>24 hour uptime</dt>
-        <dd title="{{ uptime.24 * 100 }}%">{{ uptime.24 | pretty_percentage }}</dd>
-        <dt>30 day uptime</dt>
-        <dd title="{{ uptime.720 * 100 }}%">{{ uptime.720 | pretty_percentage }}</dd>
-        <dt>1 year uptime</dt>
-        <dd title="{{ uptime['1y'] * 100 }}%">{{ uptime['1y'] | pretty_percentage }}</dd>
+    {%- if monitor.type == MonitorType.GROUP %}
+    <div class="tna-table-wrapper">
+      <table class="tna-table">
+        <caption class="tna-table__caption">
+          {{ monitor.name }} component uptimes
+        </caption>
+        <thead class="tna-table__head">
+          <tr class="tna-table__row">
+            <th class="tna-table__header">Service</th>
+            <th class="tna-table__header tna-table__header--numeric">24 hour uptime</th>
+            <th class="tna-table__header tna-table__header--numeric">30 day uptime</th>
+            <th class="tna-table__header tna-table__header--numeric">1 year uptime</th>
+          </tr>
+        </thead>
+        <tbody class="tna-table__body">
+          {%- for child in monitor_children %}
+          <tr class="tna-table__row">
+            <th class="tna-table__header">
+              <a href="#monitor-{{ child.name | slugify }}">{{ child.name }}</a>
+            </th>
+            <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.24 * 100 }}%">
+              {{ child.uptime.24 | pretty_percentage }}
+            </td>
+            <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime.720 * 100 }}%">
+              {{ child.uptime.720 | pretty_percentage }}
+            </td>
+            <td class="tna-table__cell tna-table__cell--numeric" title="{{ child.uptime['1y'] * 100 }}%">
+              {{ child.uptime['1y'] | pretty_percentage }}
+            </td>
+          </tr>
+          {%- endfor %}
+        </tbody>
+        <tfoot class="tna-table__foot">
+          <tr class="tna-table__row">
+            <th class="tna-table__header">Total</th>
+            <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.24 * 100 }}%">
+              {{ uptime.24 | pretty_percentage }}
+            </td>
+            <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime.720 * 100 }}%">
+              {{ uptime.720 | pretty_percentage }}
+            </td>
+            <td class="tna-table__cell tna-table__cell--numeric" title="{{ uptime['1y'] * 100 }}%">
+              {{ uptime['1y'] | pretty_percentage }}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    {%- else %}
+    {%- set recent_incidents = heartbeats | previous_incidents %}
+    <dl class="tna-dl tna-dl--50-50">
+      <dt>24 hour uptime</dt>
+      <dd title="{{ uptime.24 * 100 }}%">{{ uptime.24 | pretty_percentage }}</dd>
+      <dt>30 day uptime</dt>
+      <dd title="{{ uptime.720 * 100 }}%">{{ uptime.720 | pretty_percentage }}</dd>
+      <dt>1 year uptime</dt>
+      <dd title="{{ uptime['1y'] * 100 }}%">{{ uptime['1y'] | pretty_percentage }}</dd>
+      <dt>Average response time</dt>
+      <dd title="{{ average_ping }} ms">{{ average_ping | int }} ms</dd>
+      
+      {%- set incidents = recent_incidents | incident_count %}
+      {%- if incidents %}
+      <dt>Total incidents</dt>
+      <dd>{{ incidents }}</dd>
+
+      <dt>Total downtime</dt>
+      <dd>{{ recent_incidents | total_incident_time | int | seconds_to_time }}</dd>
+
+      <dt>Average incident duration</dt>
+      <dd>{{ recent_incidents | average_incident_time | int | seconds_to_time }}</dd>
+      
+      <dt>Longest incident</dt>
+      <dd>{{ recent_incidents | longest_incident_time | int | seconds_to_time }}</dd>
+      
+      {%- if (recent_incidents | first).end %}
+      <dt>Last incident</dt>
+      <dd title="{{ (recent_incidents | first).end.time | pretty_date }} (UTC)">{{ (recent_incidents | first).end.time | time_ago }}</dd>
+      {%- endif %}
+      {%- endif %}
+      
+      {%- set total_maintenance = recent_incidents | total_maintenance_time | int %}
+      {%- if total_maintenance %}
+      <dt>Total maintenance time</dt>
+      <dd>{{ total_maintenance | seconds_to_time }}</dd>
+      {%- endif %}
+    </dl>
+    {%- if recent_incidents %}
+    {{ incidents_table(recent_incidents, monitor.name) }}
+    {%- else %}
+    <p><strong>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</strong></p>
+    {%- endif %}
+    {%- endif %}
+
+    {% if has_child_monitors %}
+    {%- for child in monitor_children %}
+      <hr class="tna-!--margin-top-l">
+
+      <h2 class="tna-heading-l" id="monitor-{{ child.name | slugify }}">{{ child.name }}</h2>
+
+      {%- if child.description %}
+      <p>{{ child.description }}</p>
+      {%- endif %}
+
+      <dl class="tna-dl tna-dl--stacked tna-dl--plain">
         <dt>Average response time</dt>
-        <dd title="{{ average_ping }} ms">{{ average_ping | int }} ms</dd>
-        
-        {%- set incidents = recent_incidents | incident_count %}
+        <dd title="{{ child.average_ping }} ms">{{ child.average_ping | int }} ms</dd>
+      </dl>
+
+      {%- set child_recent_incidents = child.heartbeats | previous_incidents %}
+      {%- if child_recent_incidents %}
+      {%- set incidents = child_recent_incidents | incident_count %}
+      <dl class="tna-dl tna-dl--50-50">
         {%- if incidents %}
         <dt>Total incidents</dt>
         <dd>{{ incidents }}</dd>
 
-        <dt>Total downtime</dt>
-        <dd>{{ recent_incidents | total_incident_time | int | seconds_to_time }}</dd>
+        <dt>Total downtime (excluding maintenance)</dt>
+        <dd>{{ child_recent_incidents | total_incident_time | int | seconds_to_time }}</dd>
 
         <dt>Average incident duration</dt>
-        <dd>{{ recent_incidents | average_incident_time | int | seconds_to_time }}</dd>
+        <dd>{{ child_recent_incidents | average_incident_time | int | seconds_to_time }}</dd>
         
         <dt>Longest incident</dt>
-        <dd>{{ recent_incidents | longest_incident_time | int | seconds_to_time }}</dd>
+        <dd>{{ child_recent_incidents | longest_incident_time | int | seconds_to_time }}</dd>
         
-        {%- if (recent_incidents | first).end %}
+        {%- if (child_recent_incidents | first).end %}
         <dt>Last incident</dt>
-        <dd title="{{ (recent_incidents | first).end.time | pretty_date }} (UTC)">{{ (recent_incidents | first).end.time | time_ago }}</dd>
+        <dd title="{{ (child_recent_incidents | first).end.time | pretty_date }} (UTC)">{{ (child_recent_incidents | first).end.time | time_ago }}</dd>
         {%- endif %}
         {%- endif %}
         
-        {%- set total_maintenance = recent_incidents | total_maintenance_time | int %}
+        {%- set total_maintenance = child_recent_incidents | total_maintenance_time | int %}
         {%- if total_maintenance %}
         <dt>Total maintenance time</dt>
         <dd>{{ total_maintenance | seconds_to_time }}</dd>
         {%- endif %}
       </dl>
-      {%- if recent_incidents %}
-      {{ incidents_table(recent_incidents, monitor.name) }}
+      {{ incidents_table(child_recent_incidents, child.name) }}
       {%- else %}
-      <p><strong>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</strong></p>
+      <p>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
       {%- endif %}
-      {%- endif %}
-
-      {% if has_child_monitors %}
-      {%- for child in monitor_children %}
-        <hr class="tna-!--margin-top-l">
-
-        <h2 class="tna-heading-l" id="monitor-{{ child.name | slugify }}">{{ child.name }}</h2>
-
-        {%- if child.description %}
-        <p>{{ child.description }}</p>
-        {%- endif %}
-
-        <dl class="tna-dl tna-dl--stacked tna-dl--plain">
-          <dt>Average response time</dt>
-          <dd title="{{ child.average_ping }} ms">{{ child.average_ping | int }} ms</dd>
-        </dl>
-
-        {%- set child_recent_incidents = child.heartbeats | previous_incidents %}
-        {%- if child_recent_incidents %}
-        {%- set incidents = child_recent_incidents | incident_count %}
-        <dl class="tna-dl tna-dl--50-50">
-          {%- if incidents %}
-          <dt>Total incidents</dt>
-          <dd>{{ incidents }}</dd>
-
-          <dt>Total downtime (excluding maintenance)</dt>
-          <dd>{{ child_recent_incidents | total_incident_time | int | seconds_to_time }}</dd>
-
-          <dt>Average incident duration</dt>
-          <dd>{{ child_recent_incidents | average_incident_time | int | seconds_to_time }}</dd>
-          
-          <dt>Longest incident</dt>
-          <dd>{{ child_recent_incidents | longest_incident_time | int | seconds_to_time }}</dd>
-          
-          {%- if (child_recent_incidents | first).end %}
-          <dt>Last incident</dt>
-          <dd title="{{ (child_recent_incidents | first).end.time | pretty_date }} (UTC)">{{ (child_recent_incidents | first).end.time | time_ago }}</dd>
-          {%- endif %}
-          {%- endif %}
-          
-          {%- set total_maintenance = child_recent_incidents | total_maintenance_time | int %}
-          {%- if total_maintenance %}
-          <dt>Total maintenance time</dt>
-          <dd>{{ total_maintenance | seconds_to_time }}</dd>
-          {%- endif %}
-        </dl>
-        {{ incidents_table(child_recent_incidents, child.name) }}
-        {%- else %}
-        <p>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
-        {%- endif %}
-      {%- endfor %}
-      {%- endif %}
-    </div>
-    {%- if has_child_monitors %}
-    <div class="tna-column tna-column--width-1-4 tna-column--full-small tna-column--full-tiny">
-      {%- set ns = namespace(sidebar_items=[{
-        'text': 'Overview',
-        'href': '#overview'
-      }]) %}
-      {%- for child in monitor_children %}
-        {%- set ns.sidebar_items = ns.sidebar_items + [{
-          'text': child.name,
-          'href': '#monitor-' ~ (child.name | slugify)
-        }] %}
-      {%- endfor %}
-      {{ tnaSidebar({
-        'title': 'On this page',
-        'headingLevel': 2,
-        'items': ns.sidebar_items,
-        'type': 'contents',
-        'sticky': True,
-        'classes': 'tna-!--padding-top-m'
-      }) }}
-    </div>
+    {%- endfor %}
     {%- endif %}
-    <div class="tna-column tna-column--full">
-      <hr class="tna-!--margin-top-l">
-      <div class="tna-button-group">
-        {{ tnaButton({
-          'text': 'Back to top',
-          'href': '#top',
-          'icon': 'arrow-up',
-          'small': True,
-          'plain': True
-        }) }}
-      </div>
+  </div>
+  {%- if has_child_monitors %}
+  <div class="tna-column tna-column--width-1-4 tna-column--full-small tna-column--full-tiny">
+    {%- set ns = namespace(sidebar_items=[{
+      'text': 'Overview',
+      'href': '#overview'
+    }]) %}
+    {%- for child in monitor_children %}
+      {%- set ns.sidebar_items = ns.sidebar_items + [{
+        'text': child.name,
+        'href': '#monitor-' ~ (child.name | slugify)
+      }] %}
+    {%- endfor %}
+    {{ tnaSidebar({
+      'title': 'On this page',
+      'headingLevel': 2,
+      'items': ns.sidebar_items,
+      'type': 'contents',
+      'sticky': True,
+      'classes': 'tna-!--padding-top-m'
+    }) }}
+  </div>
+  {%- endif %}
+  <div class="tna-column tna-column--full">
+    <hr class="tna-!--margin-top-l">
+    <div class="tna-button-group">
+      {{ tnaButton({
+        'text': 'Back to top',
+        'href': '#top',
+        'icon': 'arrow-up',
+        'small': True,
+        'plain': True
+      }) }}
     </div>
   </div>
 </div>

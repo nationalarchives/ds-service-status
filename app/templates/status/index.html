@@ -177,12 +177,6 @@
           <dd>
             <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
           </dd>
-          
-          <!-- {%- set item_last_24h_uptime = heartbeats.uptimeList[(item.id | string) + '_24'] %}
-          {%- if item_last_24h_uptime %}
-          <dt>Uptime over the last 24 hours</dt>
-          <dd data-uptime="{{ item_last_24h_uptime * 100 }}">{{ (item_last_24h_uptime * 100) | round | int }}%</dd>
-          {%- endif %} -->
 
           {%- set recent_incidents = item_heartbeats | previous_incidents %}
           {%- if recent_incidents %}
@@ -190,11 +184,6 @@
           <dd>
             {{ incidents_list(recent_incidents) }}
           </dd>
-          {%- endif %}
-
-          {%- if most_recent_item_heartbeat.msg %}
-          <dt>Last message</dt>
-          <dd>{{ most_recent_item_heartbeat.msg }}</dd>
           {%- endif %}
         </dl>
 

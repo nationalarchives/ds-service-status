@@ -2,6 +2,7 @@ import os
 
 from app.lib.api import JSONAPIClient
 from app.lib.cache import cache, cache_key_prefix
+from app.lib.template_filters import slugify
 from app.status import bp
 from flask import current_app, redirect, render_template, url_for
 from uptime_kuma_api import MonitorType, UptimeKumaApi
@@ -46,9 +47,9 @@ def index():
     )
 
 
-@bp.route("/<int:monitor_id>")
+@bp.route("/<string:monitor_slug>")
 @cache.cached(key_prefix=cache_key_prefix)
-def details(monitor_id):
+def details(monitor_slug):
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
     heartbeat_hours_to_show = 720  # 30 days
 
@@ -58,16 +59,16 @@ def details(monitor_id):
                 api.login_by_token(jwt)
 
                 status_page = api.get_status_page(uptime_kuma_status_page_slug)
-                id_in_list = False
+                monitor_id = None
                 groups = status_page.get("publicGroupList", [])
                 for list in groups:
                     monitorList = list.get("monitorList", [])
                     for monitor in monitorList:
-                        if monitor["id"] == monitor_id:
+                        if slugify(monitor["name"]) == monitor_slug:
                             status_page_monitor_details = monitor
-                            id_in_list = True
+                            monitor_id = monitor["id"]
                             break
-                if not id_in_list:
+                if not monitor_id:
                     return render_template("errors/page_not_found.html"), 404
 
                 monitors = api.get_monitors()

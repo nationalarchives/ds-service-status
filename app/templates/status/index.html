@@ -200,7 +200,7 @@
 
         {%- if jwt_set_up %}
         <p class="tna-!--margin-top-xs">
-          <small>See <a href="{{ url_for('status.details', monitor_id=item.id) }}">more details for {{ item.name }}</a></small>
+          <small>See <a href="{{ url_for('status.details', monitor_slug=(item.name | slugify)) }}">more details for {{ item.name }}</a></small>
         </p>
         {%- endif %}
       </div>

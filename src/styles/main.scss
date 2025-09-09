@@ -343,3 +343,36 @@ $refresh-banner-height: 2.5rem;
     gap: 0;
   }
 }
+
+dt:has(.tna-status-example) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: spacing.space(0.75);
+}
+
+.tna-status-example {
+  width: 1em;
+  height: 1em;
+
+  display: inline-block;
+
+  @include colour.accent;
+  @include borders.rounded-border;
+
+  &--down {
+    @include colour.pink-accent;
+  }
+
+  &--up {
+    @include colour.green-accent;
+  }
+
+  &--pending {
+    @include colour.yellow-accent;
+  }
+
+  &--maintenance {
+    @include colour.blue-accent;
+  }
+}

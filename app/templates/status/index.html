@@ -150,7 +150,7 @@
     </div>
     {%- endif %}
 
-    <div class="tna-column tna-column--full tna-!--margin-top-l">  
+    <div class="tna-column tna-column--full tna-!--margin-top-l">
       {%- for group in data.publicGroupList %}
       <h2 class="tna-heading-l" id="group-{{ group.name | slugify }}">{{ group.name }}</h2>
       <hr class="tna-!--margin-top-s">
@@ -196,7 +196,34 @@
       {%- endif %}
       {%- endfor %}
       {%- endfor %}
-      
+    </div>
+    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-m">
+      <h2 class="tna-heading-l tna-!--padding-top-s">Key</h2>
+      <dl class="tna-dl">
+        <dt>
+          <span class="tna-status-example tna-status-example--up"></span>
+          Up
+        </dt>
+        <dd>The service is responding normally</dd>
+        <dt>
+          <span class="tna-status-example tna-status-example--pending"></span>
+          Pending
+        </dt>
+        <dd>The service is currently unreachable and retries might be made to establish whether there is an issue</dd>
+        <dt>
+          <span class="tna-status-example tna-status-example--down"></span>
+          Down
+        </dt>
+        <dd>The service is unreachable</dd>
+        <dt>
+          <span class="tna-status-example tna-status-example--maintenance"></span>
+          Maintenance
+        </dt>
+        <dd>The service is undergoing planned maintenance and might not be reachable</dd>
+      </dl>
+    </div>
+    <div class="tna-column tna-column--full tna-!--margin-top-l">
+      <hr>
       <div class="tna-button-group">
         {{ tnaButton({
           'text': 'Back to top',

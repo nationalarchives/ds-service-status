@@ -95,6 +95,7 @@ def previous_incidents(heartbeats):
             or heartbeat.get("status") == MonitorStatus(3)
         ):
             start = heartbeat
+            has_start = True
         if end:
             if heartbeat.get("status") != MonitorStatus(0) and heartbeat.get(
                 "status"
@@ -110,7 +111,7 @@ def previous_incidents(heartbeats):
             incidents.append(
                 {
                     "start": start,
-                    "end": end,
+                    "end": end if has_end else None,
                     "has_start": has_start,
                     "has_end": has_end,
                     "duration_seconds": int(

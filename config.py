@@ -3,6 +3,8 @@ import os
 
 from app.lib.util import strtobool
 
+DEFAULT_STATUS_PAGE_CACHE_DURATION = 15
+
 
 class Features:
     pass
@@ -58,6 +60,12 @@ class Production(Features):
 
     CACHE_TYPE: str = "FileSystemCache"
     CACHE_DEFAULT_TIMEOUT: int = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "900"))
+    STATUS_PAGE_REFRESH_SECONDS: int = int(
+        os.environ.get("STATUS_PAGE_REFRESH_SECONDS", "60")
+    )
+    STATUS_PAGE_CACHE_DURATION: int = int(
+        os.environ.get("STATUS_PAGE_CACHE_DURATION", DEFAULT_STATUS_PAGE_CACHE_DURATION)
+    )
     CACHE_IGNORE_ERRORS: bool = True
     CACHE_DIR: str = os.environ.get("CACHE_DIR", "/tmp")
     CACHE_REDIS_URL: str = os.environ.get("CACHE_REDIS_URL", "")
@@ -68,9 +76,9 @@ class Production(Features):
         "UPTIME_KUMA_STATUS_PAGE_SLUG", ""
     )
 
-    STATUS_PAGE_REFRESH_SECONDS: int = int(
-        os.environ.get("STATUS_PAGE_REFRESH_SECONDS", "60")
-    )
+    DETAILED_SERVICE_REPORT_HOURS: int = int(
+        os.environ.get("DETAILED_SERVICE_REPORT_HOURS", "720")
+    )  # 30 days
 
 
 class Staging(Production):

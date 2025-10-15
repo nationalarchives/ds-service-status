@@ -20,6 +20,7 @@ services:
       - UPTIME_KUMA_JWT=${UPTIME_KUMA_JWT}
       - UPTIME_KUMA_URL=https://uptime.tna.dblclk.dev
       - UPTIME_KUMA_STATUS_PAGE_SLUG=nationalarchives
+      - DETAILED_SERVICE_REPORT_HOURS=720 # 30 days
     ports:
       - 65516:8080
     volumes:

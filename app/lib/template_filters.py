@@ -2,6 +2,7 @@ import datetime
 import math
 import re
 
+from flask import current_app
 from markdown_it import MarkdownIt
 from uptime_kuma_api import MonitorStatus
 
@@ -235,6 +236,7 @@ def relative_time(date):
         def __init__(self, dt):
             now = datetime.datetime.now()
             delta = now - dt
+            self.total_seconds = delta.total_seconds()
             self.day = delta.days
             self.second = delta.seconds
             self.year, self.day = qnr(self.day, 365)
@@ -243,11 +245,15 @@ def relative_time(date):
             self.minute, self.second = qnr(self.second, 60)
 
         def format(self):
+            if self.total_seconds < current_app.config.get(
+                "STATUS_PAGE_CACHE_DURATION"
+            ):
+                return "Now"
             for period in ["year", "month", "day", "hour", "minute", "second"]:
                 n = getattr(self, period)
                 if n >= 1:
                     return "{0} ago".format(formatn(n, period))
-            return "just now"
+            return "Now"
 
     return FormatDelta(date).format()
 

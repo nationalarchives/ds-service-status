@@ -61,6 +61,7 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 | `UPTIME_KUMA_JWT`                | A JWT which allows access to the API                                        | _none_                                                    |
 | `UPTIME_KUMA_STATUS_PAGE_SLUG`   | The slug of the Uptime Kuma status page                                     | _none_                                                    |
 | `STATUS_PAGE_CACHE_DURATION`     | The number of seconds to cache the status page                              | `15`                                                      |
-| `STATUS_PAGE_REFRESH_SECONDS`    | If used, the number of second between automatic page refreshes.             | `60`                                                      |
+| `STATUS_PAGE_REFRESH_SECONDS`    | If used, the number of second between automatic page refreshes              | `60`                                                      |
+| `DETAILED_SERVICE_REPORT_HOURS`  | The number of hours to show in the service details page                     | `720`                                                     |
 
 [^1] [Debugging in Flask](https://flask.palletsprojects.com/en/2.3.x/debugging/)

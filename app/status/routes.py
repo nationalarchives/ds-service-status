@@ -4,6 +4,7 @@ from app.lib.api import JSONAPIClient
 from app.lib.cache import cache, cache_key_prefix
 from app.lib.template_filters import slugify
 from app.status import bp
+from config import DEFAULT_STATUS_PAGE_CACHE_DURATION
 from flask import current_app, redirect, render_template, url_for
 from uptime_kuma_api import MonitorType, UptimeKumaApi
 
@@ -27,7 +28,9 @@ def get_settings():
 @bp.route("/")
 @cache.cached(
     key_prefix=cache_key_prefix,
-    timeout=int(os.environ.get("STATUS_PAGE_CACHE_DURATION", "15")),
+    timeout=int(
+        os.environ.get("STATUS_PAGE_CACHE_DURATION", DEFAULT_STATUS_PAGE_CACHE_DURATION)
+    ),
 )
 def index():
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
@@ -51,7 +54,6 @@ def index():
 @cache.cached(key_prefix=cache_key_prefix)
 def details(monitor_slug):
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
-    heartbeat_hours_to_show = 720  # 30 days
 
     if jwt := current_app.config.get("UPTIME_KUMA_JWT"):
         try:
@@ -82,13 +84,16 @@ def details(monitor_slug):
                         monitor_children.append(child)
                 for child in monitor_children:
                     child["heartbeats"] = api.get_monitor_beats(
-                        child["id"], heartbeat_hours_to_show
+                        child["id"],
+                        current_app.config.get("DETAILED_SERVICE_REPORT_HOURS"),
                     )
                     child["average_ping"] = pings.get(child["id"], None)
                     child["uptime"] = uptimes.get(child["id"], None)
 
                 uptime = uptimes.get(monitor_id, {})
-                heartbeats = api.get_monitor_beats(monitor_id, heartbeat_hours_to_show)
+                heartbeats = api.get_monitor_beats(
+                    monitor_id, current_app.config.get("DETAILED_SERVICE_REPORT_HOURS")
+                )
                 average_ping = pings.get(monitor_id, None)
 
                 return render_template(
@@ -99,7 +104,9 @@ def details(monitor_slug):
                     MonitorType=MonitorType,
                     uptime=uptime,
                     heartbeats=heartbeats,
-                    heartbeat_hours_to_show=heartbeat_hours_to_show,
+                    heartbeat_hours_to_show=current_app.config.get(
+                        "DETAILED_SERVICE_REPORT_HOURS"
+                    ),
                     average_ping=average_ping,
                 )
         except Exception as e:

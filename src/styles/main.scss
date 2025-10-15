@@ -273,8 +273,7 @@ $refresh-banner-height: 2.5rem;
   }
 
   &::after {
-    content: "Now";
-    // content: attr(data-newest-heartbeat);
+    content: attr(data-newest-heartbeat);
 
     right: 0;
   }

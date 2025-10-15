@@ -172,20 +172,21 @@
           <strong>{{ most_recent_item_heartbeat_data.title }}</strong>
         </p>
         {{ heartbeats_graph(item_heartbeats, False, show_n_heartbeats_on_mobile) }}
+        
+        {%- set recent_incidents = item_heartbeats | previous_incidents %}
+        {%- if recent_incidents %}
         <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
-          <dt>Last checked</dt>
+          <!-- <dt>Last checked</dt>
           <dd>
             <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
-          </dd>
+          </dd> -->
 
-          {%- set recent_incidents = item_heartbeats | previous_incidents %}
-          {%- if recent_incidents %}
           <dt>Recent incidents</dt>
           <dd>
             {{ incidents_list(recent_incidents) }}
           </dd>
-          {%- endif %}
         </dl>
+        {%- endif %}
 
         {%- if jwt_set_up %}
         <p class="tna-!--margin-top-xs">

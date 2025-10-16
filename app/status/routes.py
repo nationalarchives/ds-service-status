@@ -110,7 +110,9 @@ def details(monitor_slug):
                     average_ping=average_ping,
                 )
         except Exception as e:
-            current_app.logger.error(f"Failed to render status page: {e}")
+            current_app.logger.error(
+                f"Failed to render detailed status page for '{monitor_slug}': {e}"
+            )
             return render_template("errors/api.html"), 502
 
     return redirect(url_for("status.index"))

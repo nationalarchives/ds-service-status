@@ -5,7 +5,8 @@ from app.lib.cache import cache, cache_key_prefix
 from app.lib.template_filters import slugify
 from app.status import bp
 from config import DEFAULT_STATUS_PAGE_CACHE_DURATION
-from flask import current_app, redirect, render_template, url_for
+from flask import current_app, make_response, redirect, render_template, url_for
+from flask_caching import CachedResponse
 from uptime_kuma_api import MonitorType, UptimeKumaApi
 
 
@@ -41,7 +42,10 @@ def index():
         heartbeats = client.get(f"status-page/heartbeat/{uptime_kuma_status_page_slug}")
     except Exception as e:
         current_app.logger.error(f"Failed to render status page: {e}")
-        return render_template("errors/api.html"), 502
+        return CachedResponse(
+            response=make_response(render_template("errors/api.html"), 502),
+            timeout=1,
+        )
 
     jwt_set_up = current_app.config.get("UPTIME_KUMA_JWT", "") != ""
 
@@ -113,6 +117,9 @@ def details(monitor_slug):
             current_app.logger.error(
                 f"Failed to render detailed status page for '{monitor_slug}': {e}"
             )
-            return render_template("errors/api.html"), 502
+            return CachedResponse(
+                response=make_response(render_template("errors/api.html"), 502),
+                timeout=1,
+            )
 
     return redirect(url_for("status.index"))

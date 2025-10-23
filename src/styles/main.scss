@@ -199,16 +199,13 @@ $refresh-banner-height: 2.5rem;
 
     &:hover {
       &::before {
-        @include colour.colour-border(
-          "accent-background",
-          a11yVariables.$focus-outline-width
-        );
+        @include colour.colour-border("accent-background", 4px);
       }
     }
 
     &:focus-visible,
     &:active {
-      outline: none;
+        @include a11y.no-focus-outline;
 
       &::before {
         @include a11y.focus-outline;

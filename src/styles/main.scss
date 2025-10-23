@@ -205,7 +205,7 @@ $refresh-banner-height: 2.5rem;
 
     &:focus-visible,
     &:active {
-        @include a11y.no-focus-outline;
+      @include a11y.no-focus-outline;
 
       &::before {
         @include a11y.focus-outline;

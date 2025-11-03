@@ -37,7 +37,7 @@
     {%- endif %}
     {%- if status_page_monitor_details.url %}
     <p>
-      <a href="{{ status_page_monitor_details.url }}">{{ status_page_monitor_details.url }}</a>
+      <a href="{{ status_page_monitor_details.url }}" class="tna-service-link">{{ status_page_monitor_details.url }}</a>
     </p>
     {%- endif %}
     <p>Showing data for the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>

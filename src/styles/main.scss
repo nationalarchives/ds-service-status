@@ -91,8 +91,13 @@ $refresh-banner-height: 2.5rem;
   }
 }
 
-p > a {
-  word-break: break-word;
+.tna-service-link {
+  max-width: 100%;
+
+  display: inline-block;
+  overflow: auto;
+
+  white-space: nowrap;
 }
 
 .tna-dl {

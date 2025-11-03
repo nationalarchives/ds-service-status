@@ -91,6 +91,10 @@ $refresh-banner-height: 2.5rem;
   }
 }
 
+p > a {
+  word-break: break-word;
+}
+
 .tna-dl {
   &--small {
     @include typography.font-size(16);

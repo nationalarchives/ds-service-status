@@ -543,14 +543,14 @@ docs = ["sphinx"]
 
 [[package]]
 name = "python-socketio"
-version = "5.14.2"
+version = "5.14.3"
 description = "Socket.IO server and client for Python"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "python_socketio-5.14.2-py3-none-any.whl", hash = "sha256:d7133f040ac7ba540f9a907cb4c36d6c4d1d54eb35e482aad9d45c22fca10654"},
-    {file = "python_socketio-5.14.2.tar.gz", hash = "sha256:5da35caa04059048a4521b1378340a33a15439c6a748765046112fa0d145fb1b"},
+    {file = "python_socketio-5.14.3-py3-none-any.whl", hash = "sha256:a5208c1bbf45a8d6328d01ed67e3fa52ec8b186fd3ea44cfcfcbd120f0c71fbe"},
+    {file = "python_socketio-5.14.3.tar.gz", hash = "sha256:cd8da5e0666e741b4be19e07882e880f57a4751d1645f92c2bc746c95f23b1eb"},
 ]
 
 [package.dependencies]
@@ -607,14 +607,14 @@ fixture = ["fixtures"]
 
 [[package]]
 name = "sentry-sdk"
-version = "2.42.1"
+version = "2.43.0"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = ">=3.6"
 groups = ["main"]
 files = [
-    {file = "sentry_sdk-2.42.1-py2.py3-none-any.whl", hash = "sha256:f8716b50c927d3beb41bc88439dc6bcd872237b596df5b14613e2ade104aee02"},
-    {file = "sentry_sdk-2.42.1.tar.gz", hash = "sha256:8598cc6edcfe74cb8074ba6a7c15338cdee93d63d3eb9b9943b4b568354ad5b6"},
+    {file = "sentry_sdk-2.43.0-py2.py3-none-any.whl", hash = "sha256:4aacafcf1756ef066d359ae35030881917160ba7f6fc3ae11e0e58b09edc2d5d"},
+    {file = "sentry_sdk-2.43.0.tar.gz", hash = "sha256:52ed6e251c5d2c084224d73efee56b007ef5c2d408a4a071270e82131d336e20"},
 ]
 
 [package.dependencies]
@@ -651,11 +651,13 @@ launchdarkly = ["launchdarkly-server-sdk (>=9.8.0)"]
 litellm = ["litellm (>=1.77.5)"]
 litestar = ["litestar (>=2.0.0)"]
 loguru = ["loguru (>=0.5)"]
+mcp = ["mcp (>=1.15.0)"]
 openai = ["openai (>=1.0.0)", "tiktoken (>=0.3.0)"]
 openfeature = ["openfeature-sdk (>=0.7.1)"]
 opentelemetry = ["opentelemetry-distro (>=0.35b0)"]
 opentelemetry-experimental = ["opentelemetry-distro"]
 pure-eval = ["asttokens", "executing", "pure_eval"]
+pydantic-ai = ["pydantic-ai (>=1.0.0)"]
 pymongo = ["pymongo (>=3.1)"]
 pyspark = ["pyspark (>=2.4.4)"]
 quart = ["blinker (>=1.1)", "quart (>=0.16.1)"]
@@ -689,14 +691,14 @@ docs = ["sphinx"]
 
 [[package]]
 name = "tna-frontend-jinja"
-version = "0.27.0"
+version = "0.28.0"
 description = "TNA Frontend Jinja templates"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "tna_frontend_jinja-0.27.0-py3-none-any.whl", hash = "sha256:d6df043c8e55e1f3f4b3eaf82d235be81d29097e8411915f24e722ff4b0e192a"},
-    {file = "tna_frontend_jinja-0.27.0.tar.gz", hash = "sha256:26d34feaeb6bfe61957964e4b5e0f3d58a7f74d4acce14c5bcd0c40aac32011e"},
+    {file = "tna_frontend_jinja-0.28.0-py3-none-any.whl", hash = "sha256:d69528d86beac17f6dde51c39d84c4fef8e27eb67a7cb10bdca62fdc93a3e8ec"},
+    {file = "tna_frontend_jinja-0.28.0.tar.gz", hash = "sha256:0c857ee1416047bf63d53bf4e080810a84571cffa2f1127adc7b8ddc59c2d23f"},
 ]
 
 [package.dependencies]
@@ -788,4 +790,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "d3278c0cf121e9ff8221f81833e13306fc517b4404317c5da9660f843e4a344e"
+content-hash = "302955f391fcaafce9e8c7d85b7700dd35506073157f4c6395b6314e06032fea"

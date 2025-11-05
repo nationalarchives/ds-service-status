@@ -46,6 +46,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome.css', v=app_config.BUILD_VERSION) }}" media="screen,print">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400..700&family=Roboto+Mono:wght@400..500&display=swap" media="screen,print">
     <link rel="stylesheet" href="{{ url_for('static', filename='ie.css', v=app_config.BUILD_VERSION) }}" media="all and (-ms-high-contrast: none), (-ms-high-contrast: active)">
+    <link rel="stylesheet" href="https://www.nationalarchives.gov.uk/enrichment/css/logo-adornments.css?date={{ now_iso_8601_date() }}" media="screen">
 {% endblock %}
 
 {% block cookies %}
@@ -81,6 +82,7 @@
 {% endblock %}
 
 {% block bodyEnd %}
-<script src="{{ url_for('static', filename='main.min.js', v=app_config.BUILD_VERSION) }}" defer></script>
-<script src="{{ url_for('static', filename='analytics.min.js', v=app_config.BUILD_VERSION) }}" defer></script>
+    <script src="{{ url_for('static', filename='main.min.js', v=app_config.BUILD_VERSION) }}" defer></script>
+    <script src="{{ url_for('static', filename='analytics.min.js', v=app_config.BUILD_VERSION) }}" defer></script>
+    <script type="module" src="https://www.nationalarchives.gov.uk/enrichment/js/logo-adornments.js?date={{ now_iso_8601_date() }}"></script>
 {% endblock %}

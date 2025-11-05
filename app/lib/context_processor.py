@@ -11,6 +11,12 @@ def now_iso_8601():
     return now_date
 
 
+def now_iso_8601_date():
+    now = datetime.now()
+    now_date = now.strftime("%Y-%m-%d")
+    return now_date
+
+
 def now_pretty():
     now = datetime.now()
     now_date = now.strftime("%-d %B %Y, %H:%M:%S")

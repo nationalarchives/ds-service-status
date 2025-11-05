@@ -2,7 +2,12 @@ import logging
 
 import sentry_sdk
 from app.lib.cache import cache
-from app.lib.context_processor import cookie_preference, now_iso_8601, now_pretty
+from app.lib.context_processor import (
+    cookie_preference,
+    now_iso_8601,
+    now_iso_8601_date,
+    now_pretty,
+)
 from app.lib.talisman import talisman
 from app.lib.template_filters import (
     average_incident_time,
@@ -123,6 +128,7 @@ def create_app(config_class):
         return dict(
             cookie_preference=cookie_preference,
             now_iso_8601=now_iso_8601,
+            now_iso_8601_date=now_iso_8601_date,
             now_pretty=now_pretty,
             app_config={
                 "ENVIRONMENT_NAME": app.config.get("ENVIRONMENT_NAME"),

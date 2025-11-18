@@ -16,7 +16,7 @@
       {%- for incident in most_recent_incidents %}
       <tr class="tna-table__row">
         <td class="tna-table__cell" title="{{ incident.start.msg }}">
-          {{ (incident.start.msg | capitalize) or incident.status.title }}
+          {{ incident.start.msg or incident.status.title }}
         </td>
         <td class="tna-table__cell">
           {%- if incident.has_start %}

@@ -100,6 +100,12 @@ $refresh-banner-height: 2.5rem;
   white-space: nowrap;
 }
 
+.tna-table {
+  &--smaller-text {
+    @include typography.font-size(17);
+  }
+}
+
 .tna-dl {
   &--small {
     @include typography.font-size(16);

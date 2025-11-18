@@ -349,6 +349,110 @@ $refresh-banner-height: 2.5rem;
   }
 }
 
+.tna-incident-calendar {
+  width: 100%;
+  height: 10rem;
+  margin-top: spacing.space(2.5);
+  margin-bottom: 7rem;
+  padding-right: spacing.space(0.25);
+  padding-left: 2rem;
+
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: spacing.space(0.25);
+  box-sizing: border-box;
+
+  list-style: none;
+  flex-flow: row nowrap;
+  @include colour.colour-border("keyline-dark", 1px, solid, bottom);
+
+  li {
+    height: attr(data-percentage %);
+
+    position: relative;
+
+    font-size: 0;
+
+    flex: 1;
+
+    @include colour.accent;
+
+    &::before {
+      content: attr(data-count);
+
+      margin-bottom: spacing.space(0.25);
+
+      position: absolute;
+      right: 0;
+      bottom: 100%;
+      left: 0;
+
+      line-height: 1;
+      line-height: 1cap;
+      text-align: center;
+      @include typography.font-size(12);
+      @include colour.base;
+    }
+
+    &::after {
+      content: attr(data-date);
+
+      display: block;
+      visibility: hidden;
+
+      position: absolute;
+      top: 100%;
+      right: 75%;
+
+      line-height: 1;
+      line-height: 1cap;
+      text-align: right;
+      white-space: nowrap;
+
+      transform: translateY(0.5rem) rotate(-45deg);
+      transform-origin: 100% 0;
+
+      @include typography.font-size(16);
+
+      @include colour.base;
+    }
+  }
+
+  @include media.on-larger-than-mobile {
+    li {
+      &:nth-child(2n + 1)::after {
+        visibility: visible;
+      }
+    }
+  }
+
+  @include media.on-mobile {
+    gap: spacing.space(0.125);
+  }
+
+  @include media.on-small {
+    li {
+      &:nth-child(3n + 1)::after {
+        visibility: visible;
+      }
+    }
+  }
+
+  @include media.on-tiny {
+    li {
+      &:nth-child(4n + 1)::after {
+        visibility: visible;
+      }
+
+      &::before {
+        visibility: hidden;
+      }
+    }
+  }
+}
+
 dt:has(.tna-status-example) {
   display: flex;
   align-items: center;

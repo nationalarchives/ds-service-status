@@ -4,6 +4,7 @@ import sentry_sdk
 from app.lib.cache import cache
 from app.lib.context_processor import (
     cookie_preference,
+    incident_calendar,
     now_iso_8601,
     now_iso_8601_date,
     now_pretty,
@@ -130,6 +131,7 @@ def create_app(config_class):
             now_iso_8601=now_iso_8601,
             now_iso_8601_date=now_iso_8601_date,
             now_pretty=now_pretty,
+            incident_calendar=incident_calendar,
             app_config={
                 "ENVIRONMENT_NAME": app.config.get("ENVIRONMENT_NAME"),
                 "CONTAINER_IMAGE": app.config.get("CONTAINER_IMAGE"),

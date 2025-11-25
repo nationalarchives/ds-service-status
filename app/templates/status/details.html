@@ -25,9 +25,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="tna-container tna-!--padding-top-s">
+<div class="tna-container tna-!--padding-top-m">
   {%- set has_child_monitors = monitor_children | length > 0 %}
-  <div class="tna-column tna-column--width-3-4 tna-column--full-small tna-column--full-tiny tna-!--padding-top-m" id="overview">
+  <div class="tna-column tna-column--width-3-4 tna-column--full-small tna-column--full-tiny tna-!--padding-top-s tna-!--padding-bottom-m" id="overview">
     <hgroup class="tna-hgroup-xl">
       <p class="tna-hgroup__supertitle">Service</p>
       <h1 class="tna-hgroup__title">{{ monitor.name }}</h1>
@@ -234,7 +234,7 @@
       'items': ns.sidebar_items,
       'type': 'contents',
       'sticky': True,
-      'classes': 'tna-!--padding-top-m'
+      'classes': 'tna-!--padding-top-s'
     }) }}
   </div>
   {%- endif %}

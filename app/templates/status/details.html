@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{%- from 'components/back-link/macro.html' import tnaBackLink -%}
 {%- from 'components/button/macro.html' import tnaButton -%}
 {%- from 'components/sidebar/macro.html' import tnaSidebar -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
@@ -17,9 +18,10 @@
 {{ super() }}
     <div class="tna-container tna-!--padding-top-s">
       <div class="tna-column tna-column--full">
-        <a href="{{ url_for('status.index') }}" class="tna-back-link">
-          <span class="tna-back-link__inner">Service status</span>
-        </a>
+        {{ tnaBackLink({
+          'text': 'Service status',
+          'href': url_for('status.index')
+        }) }}
       </div>
     </div>
 {% endblock %}

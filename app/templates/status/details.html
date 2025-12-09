@@ -140,23 +140,22 @@
       <dd>{{ total_maintenance | seconds_to_time }}</dd>
       {%- endif %}
     </dl>
-    {%- if recent_incidents %}
-    {{ incidents_table(recent_incidents, monitor.name) }}
-    {%- else %}
-    <p><strong>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</strong></p>
-    {%- endif %}
-    {%- endif %}
 
     {%- if recent_incidents %}
-    {% call tnaDetails({"title": "Timeline of total incidents (experimental)"}) %}
-      <p>This experimental chart shows the summary of events that occurred for any given day in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
-      {%- set incident_calendar_events = incident_calendar(((heartbeat_hours_to_show / 24) | int), recent_incidents) %}
-      <ul class="tna-incident-calendar">
-        {%- for day in incident_calendar_events.calendar %}
-        <li data-date="{{ day.short_date }}" data-count="{{ day.count or '' }}" data-percentage="{{ (day.count / incident_calendar_events.max_incidents) * 100 }}" title="{{ day.pretty_date }}: {{ day.count }} incidents">{{ day.pretty_date }}: {{ day.count }} incidents</li>
-        {%- endfor %}
-      </ul>
-    {% endcall %}
+      {% call tnaDetails({"title": "Timeline of incidents (experimental)"}) %}
+        <p>This chart shows the summary of events that occurred for any given day in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
+        {%- set incident_calendar_events = incident_calendar(((heartbeat_hours_to_show / 24) | int), recent_incidents) %}
+        <ul class="tna-incident-calendar">
+          {%- for day in incident_calendar_events.calendar %}
+          <li data-date="{{ day.short_date }}" data-count="{{ day.count or '' }}" data-percentage="{{ (day.count / incident_calendar_events.max_incidents) * 100 }}" title="{{ day.pretty_date }}: {{ day.count }} incidents">{{ day.pretty_date }}: {{ day.count }} incidents</li>
+          {%- endfor %}
+        </ul>
+      {% endcall %}
+      
+      {{ incidents_table(recent_incidents, monitor.name) }}
+      {%- else %}
+      <p><strong>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</strong></p>
+      {%- endif %}
     {%- endif %}
 
     {% if has_child_monitors %}
@@ -206,7 +205,7 @@
 
       {%- if child_recent_incidents %}
       {% call tnaDetails({"title": "Timeline of incidents (experimental)"}) %}
-        <p>This experimental chart shows the summary of events that occurred for any given day in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
+        <p>This chart shows the summary of events that occurred for any given day in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
         {%- set incident_calendar_events = incident_calendar(((heartbeat_hours_to_show / 24) | int), child_recent_incidents) %}
         <ul class="tna-incident-calendar">
           {%- for day in incident_calendar_events.calendar %}

@@ -56,7 +56,7 @@ def index():
 
 @bp.route("/<string:monitor_slug>/")
 @cache.cached(key_prefix=cache_key_prefix)
-def details(monitor_slug):
+def details(monitor_slug, hours=None):
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
 
     if jwt := current_app.config.get("UPTIME_KUMA_JWT"):
@@ -89,14 +89,16 @@ def details(monitor_slug):
                 for child in monitor_children:
                     child["heartbeats"] = api.get_monitor_beats(
                         child["id"],
-                        current_app.config.get("DETAILED_SERVICE_REPORT_HOURS"),
+                        hours
+                        or current_app.config.get("DETAILED_SERVICE_REPORT_HOURS"),
                     )
                     child["average_ping"] = pings.get(child["id"], None)
                     child["uptime"] = uptimes.get(child["id"], None)
 
                 uptime = uptimes.get(monitor_id, {})
                 heartbeats = api.get_monitor_beats(
-                    monitor_id, current_app.config.get("DETAILED_SERVICE_REPORT_HOURS")
+                    monitor_id,
+                    hours or current_app.config.get("DETAILED_SERVICE_REPORT_HOURS"),
                 )
                 average_ping = pings.get(monitor_id, None)
 
@@ -108,9 +110,8 @@ def details(monitor_slug):
                     MonitorType=MonitorType,
                     uptime=uptime,
                     heartbeats=heartbeats,
-                    heartbeat_hours_to_show=current_app.config.get(
-                        "DETAILED_SERVICE_REPORT_HOURS"
-                    ),
+                    heartbeat_hours_to_show=hours
+                    or current_app.config.get("DETAILED_SERVICE_REPORT_HOURS"),
                     average_ping=average_ping,
                 )
         except Exception as e:
@@ -123,3 +124,9 @@ def details(monitor_slug):
             )
 
     return redirect(url_for("status.index"))
+
+
+# @bp.route("/<string:monitor_slug>/90d/")
+# @cache.cached(key_prefix=cache_key_prefix)
+# def details_90d(monitor_slug):
+#     return details(monitor_slug, hours=90 * 24)

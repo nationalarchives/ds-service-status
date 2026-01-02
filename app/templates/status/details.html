@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {%- from 'components/back-link/macro.html' import tnaBackLink -%}
 {%- from 'components/button/macro.html' import tnaButton -%}
@@ -13,7 +13,7 @@
 {% block head %}
 {{ super() }}
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-{% endblock %}
+{% endblock head %}
 
 {% block header %}
 {{ super() }}
@@ -25,7 +25,7 @@
         }) }}
       </div>
     </div>
-{% endblock %}
+{% endblock header %}
 
 {% block content %}
 <div class="tna-container tna-!--padding-top-m">
@@ -257,4 +257,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% endblock content %}

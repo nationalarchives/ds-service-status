@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {%- from 'components/button/macro.html' import tnaButton -%}
 {%- from 'components/skip-link/macro.html' import tnaSkipLink -%}
@@ -16,7 +16,7 @@
     {%- if 'refresh' in request.args %}
     <meta http-equiv="refresh" content="{{ app_config.STATUS_PAGE_REFRESH_SECONDS + 5 }}">
     {%- endif %}
-{% endblock %}
+{% endblock head %}
 
 {% block skipLink %}
 {# TODO: Enable when skip link doesn't prefix the href with a hash
@@ -28,7 +28,7 @@
 {%- endif %}
 #}
 {{ super() }}
-{% endblock %}
+{% endblock skipLink %}
 
 {% block content %}
 <div class="tna-refresh-banner"{{ '' if 'refresh' in request.args else ' hidden' }}>
@@ -237,4 +237,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% endblock content %}

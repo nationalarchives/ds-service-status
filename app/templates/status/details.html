@@ -155,7 +155,7 @@
         {%- set incident_calendar_duration_events = incident_calendar_duration(((heartbeat_hours_to_show / 24) | int), recent_incidents) %}
         <ul class="tna-incident-calendar">
           {%- for day in incident_calendar_duration_events.calendar %}
-          <li class="tna-incident-calendar__item{% if day.duration == incident_calendar_duration_events.max_duration %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.duration | seconds_to_duration if day.duration else '' }}" data-percentage="{{ (day.duration / incident_calendar_duration_events.max_duration) * 100 }}" title="{{ day.pretty_date }}: {{ day.duration | seconds_to_duration }}"{% if day.duration %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.duration | seconds_to_duration }}</li>
+          <li class="tna-incident-calendar__item{% if day.duration == incident_calendar_duration_events.max_duration %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.duration | seconds_to_duration if day.duration else '' }}" data-percentage="{{ (day.duration / incident_calendar_duration_events.max_duration) * 100 }}" title="{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}"{% if day.duration %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}</li>
           {%- endfor %}
         </ul>
       {% endcall %}
@@ -225,7 +225,7 @@
         {%- set incident_calendar_duration_events = incident_calendar_duration(((heartbeat_hours_to_show / 24) | int), child_recent_incidents) %}
         <ul class="tna-incident-calendar">
           {%- for day in incident_calendar_duration_events.calendar %}
-          <li class="tna-incident-calendar__item{% if day.duration == incident_calendar_duration_events.max_duration %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.duration | seconds_to_duration if day.duration else '' }}" data-percentage="{{ (day.duration / incident_calendar_duration_events.max_duration) * 100 }}" title="{{ day.pretty_date }}: {{ day.duration | seconds_to_duration }}"{% if day.duration %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.duration | seconds_to_duration }}</li>
+          <li class="tna-incident-calendar__item{% if day.duration == incident_calendar_duration_events.max_duration %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.duration | seconds_to_duration if day.duration else '' }}" data-percentage="{{ (day.duration / incident_calendar_duration_events.max_duration) * 100 }}" title="{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}"{% if day.duration %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}</li>
           {%- endfor %}
         </ul>
       {% endcall %}

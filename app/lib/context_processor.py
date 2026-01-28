@@ -3,8 +3,7 @@ import json
 from urllib.parse import unquote
 
 from flask import request
-
-# from uptime_kuma_api import MonitorStatus
+from uptime_kuma_api import MonitorStatus
 
 
 def now_iso_8601():
@@ -47,7 +46,7 @@ def incident_calendar(days, incidents):
                         incident
                         for incident in incidents
                         if incident.get("start")
-                        # and incident["start"].get("status", None) != MonitorStatus(3)
+                        and incident["start"].get("status", None) != MonitorStatus(3)
                         and incident["start"].get("time")
                         and datetime.datetime.fromisoformat(
                             incident["start"]["time"]

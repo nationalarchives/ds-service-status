@@ -158,18 +158,15 @@ def total_maintenance_time(incidents):
 
 
 def seconds_to_time(s):
+    if not s:
+        return "No time"
     hours_label = "hour"
     minutes_label = "minute"
     seconds_label = "second"
-    if not s:
-        return f"00{hours_label} 00{minutes_label} 00{seconds_label}"
     total_seconds = int(s)
     hours = math.floor(total_seconds / 3600)
-    # hours_padded = str(hours).rjust(2, "0")
     minutes = math.floor((total_seconds - (hours * 3600)) / 60)
-    # minutes_padded = str(minutes).rjust(2, "0")
     seconds = total_seconds - (hours * 3600) - (minutes * 60)
-    # seconds_padded = str(seconds).rjust(2, "0")
     hours_label = hours_label if hours == 1 else f"{hours_label}s"
     minutes_label = minutes_label if minutes == 1 else f"{minutes_label}s"
     seconds_label = seconds_label if seconds == 1 else f"{seconds_label}s"

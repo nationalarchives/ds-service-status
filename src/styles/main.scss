@@ -374,7 +374,7 @@ $refresh-banner-height: 2.5rem;
   flex-flow: row nowrap;
   @include colour.colour-border("keyline-dark", 1px, solid, bottom);
 
-  li {
+  &__item {
     height: attr(data-percentage %);
 
     position: relative;
@@ -385,21 +385,36 @@ $refresh-banner-height: 2.5rem;
 
     @include colour.accent;
 
-    &::before {
-      content: attr(data-count);
+    border-radius: 0.1px;
 
-      margin-bottom: spacing.space(0.25);
+    &:not([data-label=""]) {
+      cursor: pointer;
+    }
+
+    &::before {
+      content: attr(data-label);
+
+      // margin-bottom: spacing.space(0.25);
+      margin-bottom: -1px;
+      padding: spacing.space(0.25) 0 spacing.space(0.25) spacing.space(1.25);
 
       position: absolute;
-      right: 0;
+      // right: 0;
       bottom: 100%;
       left: 0;
+      z-index: 1;
+      min-width: 100%;
 
       line-height: 1;
       line-height: 1cap;
       text-align: center;
+      white-space: nowrap;
       @include typography.font-size(12);
       @include colour.base;
+      @include colour.colour-border("accent-background", 1px, solid, bottom);
+      // background: transparent;
+
+      opacity: 0;
     }
 
     &::after {
@@ -423,6 +438,36 @@ $refresh-banner-height: 2.5rem;
       @include typography.font-size(16);
 
       @include colour.base;
+    }
+
+    &--maximum,
+    &:focus,
+    &:focus-visible,
+    &:hover {
+      &:not([data-label=""]) {
+        &::before {
+          opacity: 1;
+        }
+      }
+    }
+
+    &--maximum {
+      &:not([data-label=""]) {
+        z-index: 2;
+      }
+    }
+
+    &:focus,
+    &:focus-visible {
+      &:not([data-label=""]) {
+        z-index: 3;
+      }
+    }
+
+    &:hover {
+      &:not([data-label=""]) {
+        z-index: 4;
+      }
     }
   }
 

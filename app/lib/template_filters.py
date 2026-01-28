@@ -1,20 +1,9 @@
 import datetime
 import math
-import re
 
-from flask import current_app
 from markdown_it import MarkdownIt
+from tna_utilities.datetime import get_date_from_string, pretty_age
 from uptime_kuma_api import MonitorStatus
-
-
-def slugify(s):
-    if not s:
-        return s
-    s = s.lower().strip()
-    s = re.sub(r"[^\w\s-]", "", s)
-    s = re.sub(r"[\s_-]+", "-", s)
-    s = re.sub(r"^-+|-+$", "", s)
-    return s
 
 
 def markdown(s):
@@ -23,17 +12,6 @@ def markdown(s):
         return ""
     md = MarkdownIt()
     return md.render(s)
-
-
-def pretty_date(s):
-    """Convert a date string to a human-readable format."""
-    if not s:
-        return ""
-    try:
-        dt = datetime.datetime.fromisoformat(s)
-        return dt.strftime("%-d %B %Y, %H:%M:%S")
-    except ValueError:
-        return s
 
 
 def pretty_uptime_kuma_status(s):
@@ -210,60 +188,12 @@ def seconds_to_time(s):
     return f"{seconds} {seconds_label}"
 
 
-def relative_time(date):
-    """Take a datetime and return its "age" as a string.
-    The age can be in second, minute, hour, day, month or year. Only the
-    biggest unit is considered, e.g. if it's 2 days and 3 hours, "2 days" will
-    be returned.
-    Make sure date is not in the future, or else it won't work.
-    Original Gist by 'zhangsen' @ https://gist.github.com/zhangsen/1199964
-    """
-
-    def formatn(n, s):
-        """Add "s" if it's plural"""
-        int_n = int(round(n))
-        if int_n == 1:
-            return "1 %s" % s
-        return "%d %ss" % (int_n, s)
-
-    def qnr(a, b):
-        """Return quotient and remaining"""
-
-        return a / b, a % b
-
-    class FormatDelta:
-
-        def __init__(self, dt):
-            now = datetime.datetime.now()
-            delta = now - dt
-            self.total_seconds = delta.total_seconds()
-            self.day = delta.days
-            self.second = delta.seconds
-            self.year, self.day = qnr(self.day, 365)
-            self.month, self.day = qnr(self.day, 30)
-            self.hour, self.second = qnr(self.second, 3600)
-            self.minute, self.second = qnr(self.second, 60)
-
-        def format(self):
-            if self.total_seconds < current_app.config.get(
-                "STATUS_PAGE_CACHE_DURATION"
-            ):
-                return "Now"
-            for period in ["year", "month", "day", "hour", "minute", "second"]:
-                n = getattr(self, period)
-                if n >= 1:
-                    return "{0} ago".format(formatn(n, period))
-            return "Now"
-
-    return FormatDelta(date).format()
-
-
 def time_ago(s):
     if not s:
         return ""
     try:
-        dt = datetime.datetime.fromisoformat(s)
-        return relative_time(dt)
+        dt = get_date_from_string(s)
+        return pretty_age(dt)
     except ValueError:
         return s
 

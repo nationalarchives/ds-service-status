@@ -4,7 +4,8 @@ import sentry_sdk
 from app.lib.cache import cache
 from app.lib.context_processor import (
     cookie_preference,
-    incident_calendar,
+    incident_calendar_count,
+    incident_calendar_duration,
     now_iso_8601,
     now_iso_8601_date,
     now_pretty,
@@ -15,18 +16,19 @@ from app.lib.template_filters import (
     incident_count,
     longest_incident_time,
     markdown,
-    pretty_date,
     pretty_percentage,
     pretty_uptime_kuma_status,
     previous_incidents,
     seconds_to_time,
-    slugify,
     time_ago,
     total_incident_time,
     total_maintenance_time,
 )
 from flask import Flask
 from jinja2 import ChoiceLoader, PackageLoader
+from tna_utilities.datetime import pretty_date
+from tna_utilities.datetime import seconds_to_duration as seconds_to_duration_raw
+from tna_utilities.string import slugify
 
 
 def create_app(config_class):
@@ -110,6 +112,9 @@ def create_app(config_class):
         ]
     )
 
+    def seconds_to_duration(value):
+        return seconds_to_duration_raw(value, simplify=True)
+
     app.add_template_filter(average_incident_time)
     app.add_template_filter(incident_count)
     app.add_template_filter(longest_incident_time)
@@ -119,6 +124,7 @@ def create_app(config_class):
     app.add_template_filter(pretty_uptime_kuma_status)
     app.add_template_filter(previous_incidents)
     app.add_template_filter(seconds_to_time)
+    app.add_template_filter(seconds_to_duration)
     app.add_template_filter(slugify)
     app.add_template_filter(time_ago)
     app.add_template_filter(total_incident_time)
@@ -131,7 +137,8 @@ def create_app(config_class):
             now_iso_8601=now_iso_8601,
             now_iso_8601_date=now_iso_8601_date,
             now_pretty=now_pretty,
-            incident_calendar=incident_calendar,
+            incident_calendar_count=incident_calendar_count,
+            incident_calendar_duration=incident_calendar_duration,
             app_config={
                 "ENVIRONMENT_NAME": app.config.get("ENVIRONMENT_NAME"),
                 "CONTAINER_IMAGE": app.config.get("CONTAINER_IMAGE"),

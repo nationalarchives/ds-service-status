@@ -2,11 +2,11 @@ import os
 
 from app.lib.api import JSONAPIClient
 from app.lib.cache import cache, cache_key_prefix
-from app.lib.template_filters import slugify
 from app.status import bp
 from config import DEFAULT_STATUS_PAGE_CACHE_DURATION
 from flask import current_app, make_response, redirect, render_template, url_for
 from flask_caching import CachedResponse
+from tna_utilities.string import slugify
 from uptime_kuma_api import MonitorType, UptimeKumaApi
 
 

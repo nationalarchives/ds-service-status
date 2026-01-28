@@ -707,6 +707,18 @@ files = [
 Jinja2 = ">=3"
 
 [[package]]
+name = "tna-utilities"
+version = "1.2.0"
+description = "A library of common National Archives Python functions"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "tna_utilities-1.2.0-py3-none-any.whl", hash = "sha256:016e38e2aeebf27dea5fe694e04b6123d8b6631c9eda4df4c60cbf92c399c4b5"},
+    {file = "tna_utilities-1.2.0.tar.gz", hash = "sha256:2cb07d22e06a2a26b450ab29f57f4d2c8d0b0b358d05e479134fc24c97edbdba"},
+]
+
+[[package]]
 name = "uptime-kuma-api"
 version = "1.2.1"
 description = "A python wrapper for the Uptime Kuma WebSocket API"
@@ -792,4 +804,4 @@ h11 = ">=0.16.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "4b33fbf56da8c222b0770e514d2166a6021b6f9c17b603261dea1cd395a6f615"
+content-hash = "453ea9a4b013df4ea9f6f145a8a24703a1ef00ef3b5c1527b1acfaae453b5c94"

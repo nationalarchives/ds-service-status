@@ -246,6 +246,12 @@ $refresh-banner-height: 2.5rem;
   }
 }
 
+.tna-details {
+  &__content {
+    overflow: auto;
+  }
+}
+
 .tna-monitor {
   @include colour.colour-border("keyline", 1px, solid, bottom);
 
@@ -360,8 +366,8 @@ $refresh-banner-height: 2.5rem;
   height: 10rem;
   margin-top: spacing.space(2.5);
   margin-bottom: 7rem;
-  padding-right: spacing.space(0.25);
-  padding-left: 2rem;
+  padding-left: spacing.space(2);
+  padding-right: spacing.space(1.25);
 
   display: flex;
 
@@ -401,7 +407,6 @@ $refresh-banner-height: 2.5rem;
       bottom: 100%;
       left: 0;
       z-index: 1;
-      min-width: 100%;
 
       line-height: 1;
       line-height: 1cap;
@@ -494,9 +499,9 @@ $refresh-banner-height: 2.5rem;
         visibility: visible;
       }
 
-      &::before {
-        visibility: hidden;
-      }
+      // &::before {
+      //   visibility: hidden;
+      // }
     }
   }
 }

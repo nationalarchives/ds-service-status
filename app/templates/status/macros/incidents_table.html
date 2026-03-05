@@ -20,14 +20,14 @@
         </th>
         <td class="tna-table__cell">
           {%- if incident.has_start %}
-          <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_date }} (UTC)</time>
+          <time datetime="{{ incident.start.time }}Z">{{ incident.start.time | pretty_datetime }} (UTC)</time>
           {%- else %}
           <em>Unknown</em>
           {%- endif %}
         </td>
         <td class="tna-table__cell">
           {%- if incident.has_end %}
-          <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_date }} (UTC)</time>
+          <time datetime="{{ incident.end.time }}Z">{{ incident.end.time | pretty_datetime }} (UTC)</time>
           {%- else %}
           —
           {%- endif %}

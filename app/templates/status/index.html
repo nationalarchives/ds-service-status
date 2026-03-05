@@ -76,12 +76,12 @@
       <dl class="tna-dl tna-dl--plain tna-dl--tiny tna-!--margin-top-s">
         <dt>Incident raised</dt>
         <dd>
-          <time datetime="{{ data.incident.createdDate }}Z">{{ data.incident.createdDate | pretty_date }} (UTC)</time>
+          <time datetime="{{ data.incident.createdDate }}Z">{{ data.incident.createdDate | pretty_datetime }} (UTC)</time>
         </dd>
         {%- if data.incident.lastUpdatedDate %}
         <dt>Last updated</dt>
         <dd>
-          <time datetime="{{ data.incident.lastUpdatedDate }}Z">{{ data.incident.lastUpdatedDate | pretty_date }} (UTC)</time>
+          <time datetime="{{ data.incident.lastUpdatedDate }}Z">{{ data.incident.lastUpdatedDate | pretty_datetime }} (UTC)</time>
         </dd>
         {%- endif %}
       </dl>
@@ -134,13 +134,13 @@
         {{ item.description | markdown | safe }}
         {%- if (item.timeslotList | length) == 1 %}
         <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslot</h4>
-        <p>From <strong><time datetime="{{ item.timeslotList[0].startDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].startDate | pretty_date }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ item.timeslotList[0].endDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].endDate | pretty_date }} ({{ item.timezone }})</time></strong></p>
+        <p>From <strong><time datetime="{{ item.timeslotList[0].startDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].startDate | pretty_datetime }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ item.timeslotList[0].endDate }}{{ item.timezoneOffset }}">{{ item.timeslotList[0].endDate | pretty_datetime }} ({{ item.timezone }})</time></strong></p>
         {%- elif (item.timeslotList | length) > 1 %}
         <h4 class="tna-heading-s tna-!--no-margin-top">Scheduled timeslots</h4>
         <ul class="tna-ul">
           {%- for timeslot in item.timeslotList %}
           <li>
-            From <strong><time datetime="{{ timeslot.startDate }}{{ item.timezoneOffset }}">{{ timeslot.startDate | pretty_date }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ timeslot.endDate }}{{ item.timezoneOffset }}">{{ timeslot.endDate | pretty_date }} ({{ item.timezone }})</time></strong>
+            From <strong><time datetime="{{ timeslot.startDate }}{{ item.timezoneOffset }}">{{ timeslot.startDate | pretty_datetime }} ({{ item.timezone }})</time></strong> to <strong><time datetime="{{ timeslot.endDate }}{{ item.timezoneOffset }}">{{ timeslot.endDate | pretty_datetime }} ({{ item.timezone }})</time></strong>
           </li>
           {%- endfor %}
         </ul>
@@ -178,7 +178,7 @@
         <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
           <!-- <dt>Last checked</dt>
           <dd>
-            <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_date }} (UTC)</time>
+            <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_datetime }} (UTC)</time>
           </dd> -->
 
           <dt>Recent incidents</dt>

@@ -3,7 +3,7 @@ import json
 from urllib.parse import unquote
 
 from flask import request
-from tna_utilities.datetime import pretty_date
+from tna_utilities.datetime import pretty_datetime
 from uptime_kuma_api import MonitorStatus
 
 
@@ -21,7 +21,7 @@ def now_iso_8601_date():
 
 def now_pretty():
     now = datetime.datetime.now()
-    now_date = pretty_date(now)
+    now_date = pretty_datetime(now)
     return now_date
 
 
@@ -41,7 +41,7 @@ def incident_calendar_count(days, incidents):
             {
                 "date": day.isoformat(),
                 "short_date": day.strftime("%-d %b"),
-                "pretty_date": pretty_date(day),
+                "pretty_date": pretty_datetime(day),
                 "count": len(
                     [
                         incident
@@ -77,7 +77,7 @@ def incident_calendar_duration(days, incidents):
             {
                 "date": day.isoformat(),
                 "short_date": day.strftime("%-d %b"),
-                "pretty_date": pretty_date(day),
+                "pretty_date": pretty_datetime(day),
                 "duration": sum(
                     [
                         incident.get("duration_seconds", 0)

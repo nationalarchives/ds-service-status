@@ -130,7 +130,7 @@
       
       {%- if (recent_incidents | first).end %}
       <dt>Last incident</dt>
-      <dd title="{{ (recent_incidents | first).end.time | pretty_date }} (UTC)">{{ (recent_incidents | first).end.time | time_ago }}</dd>
+      <dd title="{{ (recent_incidents | first).end.time | pretty_datetime }} (UTC)">{{ (recent_incidents | first).end.time | time_ago }}</dd>
       {%- endif %}
       {%- endif %}
       
@@ -200,7 +200,7 @@
         
         {%- if (child_recent_incidents | first).end %}
         <dt>Last incident</dt>
-        <dd title="{{ (child_recent_incidents | first).end.time | pretty_date }} (UTC)">{{ (child_recent_incidents | first).end.time | time_ago }}</dd>
+        <dd title="{{ (child_recent_incidents | first).end.time | pretty_datetime }} (UTC)">{{ (child_recent_incidents | first).end.time | time_ago }}</dd>
         {%- endif %}
         {%- endif %}
         

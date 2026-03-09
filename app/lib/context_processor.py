@@ -2,9 +2,9 @@ import datetime
 import json
 from urllib.parse import unquote
 
+from app.lib.uptime_kuma_api.monitor_status import MonitorStatus
 from flask import request
 from tna_utilities.datetime import pretty_datetime
-from uptime_kuma_api import MonitorStatus
 
 
 def now_iso_8601():
@@ -36,11 +36,11 @@ def cookie_preference(policy):
 def incident_calendar_count(days, incidents):
     calendar = []
     for i in range(days + 1):
-        day = (datetime.datetime.now() + datetime.timedelta(days=-i)).date()
+        day = datetime.datetime.now() + datetime.timedelta(days=-i)
         calendar.append(
             {
-                "date": day.isoformat(),
-                "short_date": day.strftime("%-d %b"),
+                "date": day.date().isoformat(),
+                "short_date": day.date().strftime("%-d %b"),
                 "pretty_date": pretty_datetime(day),
                 "count": len(
                     [
@@ -52,7 +52,7 @@ def incident_calendar_count(days, incidents):
                         and datetime.datetime.fromisoformat(
                             incident["start"]["time"]
                         ).date()
-                        == day
+                        == day.date()
                     ]
                 ),
             }
@@ -72,11 +72,11 @@ def incident_calendar_count(days, incidents):
 def incident_calendar_duration(days, incidents):
     calendar = []
     for i in range(days + 1):
-        day = (datetime.datetime.now() + datetime.timedelta(days=-i)).date()
+        day = datetime.datetime.now() + datetime.timedelta(days=-i)
         calendar.append(
             {
-                "date": day.isoformat(),
-                "short_date": day.strftime("%-d %b"),
+                "date": day.date().isoformat(),
+                "short_date": day.date().strftime("%-d %b"),
                 "pretty_date": pretty_datetime(day),
                 "duration": sum(
                     [
@@ -88,7 +88,7 @@ def incident_calendar_duration(days, incidents):
                         and datetime.datetime.fromisoformat(
                             incident["start"]["time"]
                         ).date()
-                        == day
+                        == day.date()
                     ]
                 ),
             }

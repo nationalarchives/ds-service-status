@@ -1,9 +1,9 @@
 import datetime
 import math
 
+from app.lib.uptime_kuma_api.monitor_status import MonitorStatus
 from markdown_it import MarkdownIt
 from tna_utilities.datetime import get_date_from_string, pretty_age
-from uptime_kuma_api import MonitorStatus
 
 
 def markdown(s):

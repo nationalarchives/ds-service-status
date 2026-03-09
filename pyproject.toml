@@ -17,6 +17,7 @@ markdown-it-py = "^3.0.0"
 uptime-kuma-api = "^1.2.1"
 sentry-sdk = {extras = ["flask"], version = "^2.36.0"}
 tna-utilities = "^1.2.0"
+python-socketio = {extras = ["client"], version = "^5.16.1"}
 
 [tool.poetry.group.dev]
 optional = true

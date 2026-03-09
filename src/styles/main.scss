@@ -114,38 +114,6 @@ $refresh-banner-height: 2.5rem;
   &--tiny {
     @include typography.font-size(14);
   }
-
-  &--stacked#{&}--plain {
-    > dd {
-      &:last-child {
-        padding-bottom: 0;
-      }
-    }
-  }
-
-  &--50-50 {
-    > dt,
-    > dd {
-      width: 50%;
-    }
-
-    @include media.on-tiny {
-      > dt,
-      > dd {
-        width: 100%;
-      }
-
-      > dt {
-        --background: var(--background-tint);
-
-        @include colour.colour-background("background");
-      }
-
-      > dd {
-        background-color: transparent !important;
-      }
-    }
-  }
 }
 
 .tna-monitor-summary-wrapper {

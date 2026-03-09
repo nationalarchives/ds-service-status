@@ -2,12 +2,13 @@ import os
 
 from app.lib.api import JSONAPIClient
 from app.lib.cache import cache, cache_key_prefix
+from app.lib.uptime_kuma_api.api import UptimeKumaApi
+from app.lib.uptime_kuma_api.monitor_type import MonitorType
 from app.status import bp
 from config import DEFAULT_STATUS_PAGE_CACHE_DURATION
 from flask import current_app, make_response, redirect, render_template, url_for
 from flask_caching import CachedResponse
 from tna_utilities.string import slugify
-from uptime_kuma_api import MonitorType, UptimeKumaApi
 
 
 def get_settings():
@@ -56,7 +57,7 @@ def index():
 
 @bp.route("/<string:monitor_slug>/")
 @cache.cached(key_prefix=cache_key_prefix)
-def details(monitor_slug, hours=None):
+def details(monitor_slug, hours=None):  # noqa: C901
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
 
     if jwt := current_app.config.get("UPTIME_KUMA_JWT"):
@@ -65,6 +66,9 @@ def details(monitor_slug, hours=None):
                 api.login_by_token(jwt)
 
                 status_page = api.get_status_page(uptime_kuma_status_page_slug)
+                if not status_page:
+                    return render_template("errors/page_not_found.html"), 404
+                status_page_monitor_details = None
                 monitor_id = None
                 groups = status_page.get("publicGroupList", [])
                 for list in groups:
@@ -82,10 +86,11 @@ def details(monitor_slug, hours=None):
                 uptimes = api.uptime()
                 monitor = next((m for m in monitors if m["id"] == monitor_id), None)
                 monitor_children = []
-                for child in monitor.get("childrenIDs", []):
-                    child = next((m for m in monitors if m["id"] == child), None)
-                    if child:
-                        monitor_children.append(child)
+                if monitor:
+                    for child in monitor.get("childrenIDs", []):
+                        child = next((m for m in monitors if m["id"] == child), None)
+                        if child:
+                            monitor_children.append(child)
                 for child in monitor_children:
                     child["heartbeats"] = api.get_monitor_beats(
                         child["id"],

@@ -1,6 +1,6 @@
 import os
 
-from uptime_kuma_api import UptimeKumaApi
+from app.lib.uptime_kuma_api import UptimeKumaApi
 
 if uptime_kuma_url := os.environ.get("UPTIME_KUMA_URL", ""):
     with UptimeKumaApi(uptime_kuma_url) as api:

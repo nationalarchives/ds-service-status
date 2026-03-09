@@ -104,7 +104,7 @@
       </table>
     </div>
     {%- else %}
-    <dl class="tna-dl tna-dl--50-50">
+    <dl class="tna-dl tna-dl--lined">
       <dt>24 hour uptime</dt>
       <dd title="{{ uptime.24 * 100 }}%">{{ uptime.24 | pretty_percentage }}</dd>
       <dt>30 day uptime</dt>
@@ -176,7 +176,7 @@
       <p>{{ child.description }}</p>
       {%- endif %}
 
-      <dl class="tna-dl tna-dl--stacked tna-dl--plain">
+      <dl class="tna-dl tna-dl--stacked">
         <dt>Average response time</dt>
         <dd title="{{ child.average_ping }} ms">{{ child.average_ping | int }} ms</dd>
       </dl>
@@ -184,7 +184,7 @@
       {%- set child_recent_incidents = child.heartbeats | previous_incidents %}
       {%- if child_recent_incidents %}
       {%- set incidents = child_recent_incidents | incident_count %}
-      <dl class="tna-dl tna-dl--50-50">
+      <dl class="tna-dl tna-dl--lined">
         {%- if incidents %}
         <dt>Total incidents</dt>
         <dd>{{ incidents }}</dd>

@@ -73,7 +73,7 @@
       {%- set incident %}
       <h3 class="tna-heading-m">{{ data.incident.title }}</h3>
       {{ data.incident.content | markdown | safe }}
-      <dl class="tna-dl tna-dl--plain tna-dl--tiny tna-!--margin-top-s">
+      <dl class="tna-dl tna-dl--tiny tna-!--margin-top-s">
         <dt>Incident raised</dt>
         <dd>
           <time datetime="{{ data.incident.createdDate }}Z">{{ data.incident.createdDate | pretty_datetime }} (UTC)</time>
@@ -175,7 +175,7 @@
         
         {%- set recent_incidents = item_heartbeats | previous_incidents %}
         {%- if recent_incidents %}
-        <dl class="tna-dl tna-dl--plain tna-dl--stacked tna-!--margin-top-s">
+        <dl class="tna-dl tna-dl--stacked tna-!--margin-top-s">
           <!-- <dt>Last checked</dt>
           <dd>
             <time datetime="{{ (item_heartbeats | last).time }}Z">{{ (item_heartbeats | last).time | pretty_datetime }} (UTC)</time>
@@ -200,7 +200,7 @@
     </div>
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-m">
       <h2 class="tna-heading-l tna-!--padding-top-s">Key</h2>
-      <dl class="tna-dl">
+      <dl class="tna-dl tna-dl--lined">
         <dt>
           <span class="tna-status-example tna-status-example--up"></span>
           Up

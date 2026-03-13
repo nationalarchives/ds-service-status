@@ -26,7 +26,7 @@ from app.lib.template_filters import (
 )
 from flask import Flask
 from jinja2 import ChoiceLoader, PackageLoader
-from tna_utilities.datetime import pretty_datetime
+from tna_utilities.datetime import pretty_date, pretty_datetime
 from tna_utilities.datetime import seconds_to_duration as seconds_to_duration_raw
 from tna_utilities.string import slugify
 
@@ -119,6 +119,7 @@ def create_app(config_class):
     app.add_template_filter(incident_count)
     app.add_template_filter(longest_incident_time)
     app.add_template_filter(markdown)
+    app.add_template_filter(pretty_date)
     app.add_template_filter(pretty_datetime)
     app.add_template_filter(pretty_percentage)
     app.add_template_filter(pretty_uptime_kuma_status)

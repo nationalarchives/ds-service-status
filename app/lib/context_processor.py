@@ -4,7 +4,7 @@ from urllib.parse import unquote
 
 from app.lib.uptime_kuma_api.monitor_status import MonitorStatus
 from flask import request
-from tna_utilities.datetime import pretty_datetime
+from tna_utilities.datetime import pretty_date, pretty_datetime
 
 
 def now_iso_8601():
@@ -41,7 +41,7 @@ def incident_calendar_count(days, incidents):
             {
                 "date": day.date().isoformat(),
                 "short_date": day.date().strftime("%-d %b"),
-                "pretty_date": pretty_datetime(day),
+                "pretty_date": pretty_date(day),
                 "count": len(
                     [
                         incident
@@ -77,13 +77,13 @@ def incident_calendar_duration(days, incidents):
             {
                 "date": day.date().isoformat(),
                 "short_date": day.date().strftime("%-d %b"),
-                "pretty_date": pretty_datetime(day),
+                "pretty_date": pretty_date(day),
                 "duration": sum(
                     [
                         incident.get("duration_seconds", 0)
                         for incident in incidents
                         if incident.get("start")
-                        # and incident["start"].get("status", None) != MonitorStatus(3)
+                        and incident["start"].get("status", None) != MonitorStatus(3)
                         and incident["start"].get("time")
                         and datetime.datetime.fromisoformat(
                             incident["start"]["time"]

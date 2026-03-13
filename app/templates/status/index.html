@@ -68,29 +68,31 @@
   </div>
 
   <div class="tna-container">
-    {%- if data.incident %}
+    {%- if data.incidents %}
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-m">
-      {%- set incident %}
-      <h3 class="tna-heading-m">{{ data.incident.title }}</h3>
-      {{ data.incident.content | markdown | safe }}
-      <dl class="tna-dl tna-dl--tiny tna-!--margin-top-s">
-        <dt>Incident raised</dt>
-        <dd>
-          <time datetime="{{ data.incident.createdDate }}Z">{{ data.incident.createdDate | pretty_datetime }} (UTC)</time>
-        </dd>
-        {%- if data.incident.lastUpdatedDate %}
-        <dt>Last updated</dt>
-        <dd>
-          <time datetime="{{ data.incident.lastUpdatedDate }}Z">{{ data.incident.lastUpdatedDate | pretty_datetime }} (UTC)</time>
-        </dd>
-        {%- endif %}
-      </dl>
-      {%- endset %}
+      {% for incident in data.incidents %}
+        {%- set incident_body %}
+        <h3 class="tna-heading-m">{{ incident.title }}</h3>
+        {{ incident.content | markdown | safe }}
+        <dl class="tna-dl tna-dl--tiny tna-!--margin-top-s">
+          <dt>Incident raised</dt>
+          <dd>
+            <time datetime="{{ incident.createdDate }}Z">{{ incident.createdDate | pretty_datetime }} (UTC)</time>
+          </dd>
+          {%- if incident.lastUpdatedDate %}
+          <dt>Last updated</dt>
+          <dd>
+            <time datetime="{{ incident.lastUpdatedDate }}Z">{{ incident.lastUpdatedDate | pretty_datetime }} (UTC)</time>
+          </dd>
+          {%- endif %}
+        </dl>
+        {%- endset %}
 
-      {{ tnaWarning({
-        'headingLevel': 2,
-        'body': incident
-      }) }}
+        {{ tnaWarning({
+          'headingLevel': 2,
+          'body': incident_body
+        }) }}
+      {%- endfor %}
     </div>
     {%- endif %}
 

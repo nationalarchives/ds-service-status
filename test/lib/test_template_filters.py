@@ -87,8 +87,8 @@ class TemplateFiltersTestCase(unittest.TestCase):
     def test_previous_incidents_hanging_on_start(self):
         heartbeats = [
             {"status": 0, "time": "2003-02-01T00:00:00"},  # DOWN
-            {"status": 1, "time": "2003-02-01T00:01:00"},  # UP
-            {"status": 1, "time": "2003-02-01T00:02:00"},
+            {"status": 0, "time": "2003-02-01T00:01:00"},
+            {"status": 1, "time": "2003-02-01T00:02:00"},  # UP
             {"status": 1, "time": "2003-02-01T00:03:00"},
             {"status": 1, "time": "2003-02-01T00:04:00"},
             {"status": 3, "time": "2003-02-01T00:05:00"},  # PENDING, Not down yet
@@ -99,7 +99,6 @@ class TemplateFiltersTestCase(unittest.TestCase):
         ]
         result = previous_incidents(heartbeats)
         self.assertEqual(len(result), 2)
-
         for incident in result:
             self.assertIsNotNone(incident.get("start"))
             self.assertIsNotNone(incident.get("end"))

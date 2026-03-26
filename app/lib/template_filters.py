@@ -74,7 +74,7 @@ def previous_incidents(heartbeats):
             or heartbeat.get("status") == MonitorStatus(3)
         ):
             start = heartbeat
-            # has_start = True
+            has_start = True
         if end:
             if heartbeat.get("status") != MonitorStatus(0) and heartbeat.get(
                 "status"

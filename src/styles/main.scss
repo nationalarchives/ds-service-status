@@ -104,6 +104,55 @@ $refresh-banner-height: 2.5rem;
   &--smaller-text {
     @include typography.font-size(17);
   }
+
+  // &__cell--numeric[data-percentage] {
+  //   padding-bottom: spacing.space(1);
+  //   position: relative;
+
+  //   &::before,
+  //   &::after {
+  //     content: "";
+
+  //     height: .75rem;
+
+  //     position: absolute;
+  //     bottom: spacing.space(0.125);
+  //     left: 0;
+
+  //     background-clip: content-box;
+
+  //     border: 0 solid transparent;
+  //     border-bottom-width: spacing.space(0.375);
+  //     border-right-width: spacing.space(1);
+  //     border-left-width: spacing.space(1);
+
+  //     box-sizing: border-box;
+  //   }
+
+  //   &::before {
+  //     right: 0;
+
+  //     z-index: -2;
+
+  //     @include colour.tint;
+  //   }
+
+  //   &::after {
+  //     width: attr(data-percentage %);
+
+  //     z-index: -1;
+
+  //     @include colour.green-accent;
+  //     @include colour.accent;
+  //   }
+
+  //   &:last-child{
+  //     &::before,
+  //     &::after {
+  //       border-right-width: 0;
+  //     }
+  //   }
+  // }
 }
 
 .tna-dl {

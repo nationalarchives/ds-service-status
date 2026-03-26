@@ -91,6 +91,7 @@ def details(monitor_slug, hours=None):  # noqa: C901
                         child = next((m for m in monitors if m["id"] == child), None)
                         if child:
                             monitor_children.append(child)
+                monitor_children.sort(key=lambda x: x["name"])
                 for child in monitor_children:
                     child["heartbeats"] = api.get_monitor_beats(
                         child["id"],

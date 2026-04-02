@@ -102,31 +102,6 @@
     </div>
     {%- endif %}
 
-    <div class="tna-column tna-column--full tna-!--margin-top-l">
-      <div class="tna-monitor-summary-wrapper">
-        {%- for group in data.publicGroupList %}
-        {%- for item in group.monitorList %}
-        {%- if heartbeats.heartbeatList[item.id | string] %}
-        {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
-        <div class="tna-monitor-summary {{ item_data.accent_colour }}">
-          <div class="tna-monitor-summary__icon">
-            <i class="fa-solid fa-fw {{ item_data.fontawesome_icon }}" aria-hidden="true"></i>
-          </div>
-          <div class="tna-monitor-summary__content">
-            <h2 class="tna-heading-s tna-heading--no-link-arrow">
-              <a href="#service-{{ item.name | slugify }}" class="tna-link--no-visited-state" aria-label="Jump to monitor for {{ item.name }}">{{ item.name }}</a>
-            </h2>
-            <p class="tna-!--no-margin-top">{{ item_data.title }}</p>
-          </div>
-        </div>
-        {%- endif %}
-        {%- endfor %}
-        {%- endfor %}
-      </div>
-      <h2 class="tna-heading-m">Report an issue</h2>
-      <p>Found something that isn't working? Send an email to <a href="mailto:webmaster@nationalarchives.gov.uk">webmaster@nationalarchives.gov.uk</a>.</p>
-    </div>
-
     {%- if data.maintenanceList %}
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
       <h2 class="tna-heading-l" id="planned-maintenance">Planned maintenance</h2>
@@ -151,6 +126,31 @@
       {%- endfor %}
     </div>
     {%- endif %}
+
+    <div class="tna-column tna-column--full tna-!--margin-top-l">
+      <div class="tna-monitor-summary-wrapper">
+        {%- for group in data.publicGroupList %}
+        {%- for item in group.monitorList %}
+        {%- if heartbeats.heartbeatList[item.id | string] %}
+        {%- set item_data = (heartbeats.heartbeatList[item.id | string] | last).status | pretty_uptime_kuma_status %}
+        <div class="tna-monitor-summary {{ item_data.accent_colour }}">
+          <div class="tna-monitor-summary__icon">
+            <i class="fa-solid fa-fw {{ item_data.fontawesome_icon }}" aria-hidden="true"></i>
+          </div>
+          <div class="tna-monitor-summary__content">
+            <h2 class="tna-heading-s tna-heading--no-link-arrow">
+              <a href="#service-{{ item.name | slugify }}" class="tna-link--no-visited-state" aria-label="Jump to monitor for {{ item.name }}">{{ item.name }}</a>
+            </h2>
+            <p class="tna-!--no-margin-top">{{ item_data.title }}</p>
+          </div>
+        </div>
+        {%- endif %}
+        {%- endfor %}
+        {%- endfor %}
+      </div>
+      <h2 class="tna-heading-m">Report an issue</h2>
+      <p>Found something that isn't working? Send an email to <a href="mailto:webmaster@nationalarchives.gov.uk">webmaster@nationalarchives.gov.uk</a>.</p>
+    </div>
 
     <div class="tna-column tna-column--full tna-!--margin-top-l">
       {%- for group in data.publicGroupList %}

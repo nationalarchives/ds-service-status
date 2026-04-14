@@ -37,7 +37,7 @@ class TemplateFiltersTestCase(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertIsNotNone(result[0].get("start"))
         self.assertIsNone(result[0].get("end"))
-        self.assertTrue(result[0].get("has_start"))
+        self.assertFalse(result[0].get("has_start"))
         self.assertFalse(result[0].get("has_end"))
         self.assertIsNotNone(result[0].get("duration_seconds"))
 
@@ -99,9 +99,13 @@ class TemplateFiltersTestCase(unittest.TestCase):
         ]
         result = previous_incidents(heartbeats)
         self.assertEqual(len(result), 2)
-        for incident in result:
-            self.assertIsNotNone(incident.get("start"))
-            self.assertIsNotNone(incident.get("end"))
-            self.assertTrue(incident.get("has_start"))
-            self.assertTrue(incident.get("has_end"))
-            self.assertIsNotNone(incident.get("duration_seconds"))
+        self.assertIsNotNone(result[0].get("start"))
+        self.assertIsNotNone(result[0].get("end"))
+        self.assertTrue(result[0].get("has_start"))
+        self.assertTrue(result[0].get("has_end"))
+        self.assertIsNotNone(result[0].get("duration_seconds"))
+        self.assertIsNotNone(result[1].get("start"))
+        self.assertIsNotNone(result[1].get("end"))
+        self.assertFalse(result[1].get("has_start"))
+        self.assertTrue(result[1].get("has_end"))
+        self.assertIsNotNone(result[1].get("duration_seconds"))

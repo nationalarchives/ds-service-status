@@ -6,6 +6,7 @@ from app.lib.context_processor import (
     cookie_preference,
     incident_calendar_count,
     incident_calendar_duration,
+    incident_calendar_heartbeats,
     now_iso_8601,
     now_iso_8601_date,
     now_pretty,
@@ -138,6 +139,7 @@ def create_app(config_class):
             now_iso_8601=now_iso_8601,
             now_iso_8601_date=now_iso_8601_date,
             now_pretty=now_pretty,
+            incident_calendar_heartbeats=incident_calendar_heartbeats,
             incident_calendar_count=incident_calendar_count,
             incident_calendar_duration=incident_calendar_duration,
             app_config={

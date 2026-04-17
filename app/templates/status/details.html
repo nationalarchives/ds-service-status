@@ -5,10 +5,12 @@
 {%- from 'components/details/macro.html' import tnaDetails -%}
 {%- from 'components/sidebar/macro.html' import tnaSidebar -%}
 {%- from 'components/warning/macro.html' import tnaWarning -%}
+{%- from 'status/macros/heartbeats_graph.html' import heartbeats_graph -%}
 {%- from 'status/macros/incidents_table.html' import incidents_table -%}
 
 {%- set pageTitle = 'Details for ' ~ monitor.name -%}
 {%- set themeAccent = 'blue' -%}
+{%- set days = (heartbeat_hours_to_show / 24) | int -%}
 
 {% block head %}
 {{ super() }}
@@ -32,7 +34,7 @@
   {%- set has_child_monitors = monitor_children | length > 0 %}
   <div class="tna-column tna-column--width-3-4 tna-column--full-small tna-column--full-tiny tna-!--padding-top-s tna-!--padding-bottom-m" id="overview">
     <hgroup class="tna-hgroup-xl">
-      <p class="tna-hgroup__supertitle">Service</p>
+      <p class="tna-hgroup__supertitle">Service report</p>
       <h1 class="tna-hgroup__title">{{ monitor.name }}</h1>
     </hgroup>
     {%- if monitor.description %}
@@ -43,7 +45,7 @@
       <a href="{{ status_page_monitor_details.url }}" class="tna-service-link">{{ status_page_monitor_details.url }}</a>
     </p>
     {%- endif %}
-    <p>Showing data for the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
+    <p>Showing data for the last {{ days }} days.{% if link_to_90d %} <a href="{{ link_to_90d }}">View 90 day report</a>.{% endif %}</p>
     <p>
       <small>Updated <strong><time datetime="{{ now_iso_8601() }}">{{ now_pretty() }} (UTC)</time></strong></small>
     </p>
@@ -53,7 +55,7 @@
       'body': 'This is a new service and the data provided may not be accurate.'
     }) }}
 
-    {%- set recent_incidents = heartbeats | previous_incidents %}
+    {%- set recent_incidents = heartbeats | previous_incidents(valid_earliest_heartbeat_start=True) %}
 
     {%- if monitor.type == MonitorType.GROUP %}
     <div class="tna-table-wrapper">
@@ -141,18 +143,20 @@
       {%- endif %}
     </dl>
 
+    {{ heartbeats_graph(incident_calendar_heartbeats(recent_incidents, days), False, days, 'm', 'Today') }}
+    
     {%- if recent_incidents %}
       {% call tnaDetails({"title": "Timelines of incidents (experimental)"}) %}
-        <p>Duration of unscheduled downtime in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
-        {%- set incident_calendar_duration_events = incident_calendar_duration(((heartbeat_hours_to_show / 24) | int), recent_incidents) %}
+        <p>Duration of unscheduled downtime in the last {{ days }} days.</p>
+        {%- set incident_calendar_duration_events = incident_calendar_duration((days), recent_incidents) %}
         <ul class="tna-incident-calendar">
           {%- for day in incident_calendar_duration_events.calendar %}
           <li class="tna-incident-calendar__item{% if day.duration == incident_calendar_duration_events.max_duration %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.duration | seconds_to_duration if day.duration else '' }}" data-percentage="{{ (day.duration / incident_calendar_duration_events.max_duration) * 100 }}" title="{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}"{% if day.duration %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}</li>
           {%- endfor %}
         </ul>
 
-        <p>Number of unexpected events in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
-        {%- set incident_calendar_count_events = incident_calendar_count(((heartbeat_hours_to_show / 24) | int), recent_incidents) %}
+        <p>Number of unexpected events in the last {{ days }} days.</p>
+        {%- set incident_calendar_count_events = incident_calendar_count((days), recent_incidents) %}
         <ul class="tna-incident-calendar">
           {%- for day in incident_calendar_count_events.calendar %}
           <li class="tna-incident-calendar__item{% if day.count == incident_calendar_count_events.max_incidents %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.count or '' }}" data-percentage="{{ (day.count / incident_calendar_count_events.max_incidents) * 100 }}" title="{{ day.pretty_date }}: {{ day.count }} incidents"{% if day.count %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.count }} incidents</li>
@@ -162,7 +166,7 @@
       
       {{ incidents_table(recent_incidents, monitor.name) }}
       {%- else %}
-      <p><strong>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</strong></p>
+      <p><strong>No incidents in the last {{ days }} days.</strong></p>
       {%- endif %}
     {%- endif %}
 
@@ -180,8 +184,8 @@
         <dt>Average response time</dt>
         <dd title="{{ child.average_ping }} ms">{{ child.average_ping | int }} ms</dd>
       </dl>
-
-      {%- set child_recent_incidents = child.heartbeats | previous_incidents %}
+      
+      {%- set child_recent_incidents = child.heartbeats | previous_incidents(valid_earliest_heartbeat_start=True) %}
       {%- if child_recent_incidents %}
       {%- set incidents = child_recent_incidents | incident_count %}
       <dl class="tna-dl tna-dl--lined">
@@ -210,30 +214,32 @@
         <dd>{{ total_maintenance | seconds_to_time }}</dd>
         {%- endif %}
       </dl>
+      {%- endif %}
+
+      {{ heartbeats_graph(incident_calendar_heartbeats(child_recent_incidents, days), False, days, 'm', 'Today') }}
 
       {%- if child_recent_incidents %}
       {% call tnaDetails({"title": "Timelines of incidents (experimental)"}) %}
-        <p>Duration of unscheduled downtime in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
-        {%- set incident_calendar_duration_events = incident_calendar_duration(((heartbeat_hours_to_show / 24) | int), child_recent_incidents) %}
+        <p>Duration of unscheduled downtime in the last {{ days }} days.</p>
+        {%- set incident_calendar_duration_events = incident_calendar_duration((days), child_recent_incidents) %}
         <ul class="tna-incident-calendar">
           {%- for day in incident_calendar_duration_events.calendar %}
           <li class="tna-incident-calendar__item{% if day.duration == incident_calendar_duration_events.max_duration %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.duration | seconds_to_duration if day.duration else '' }}" data-percentage="{{ (day.duration / incident_calendar_duration_events.max_duration) * 100 }}" title="{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}"{% if day.duration %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.duration | seconds_to_time }}</li>
           {%- endfor %}
         </ul>
 
-        <p>Number of unexpected events in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
-        {%- set incident_calendar_count_events = incident_calendar_count(((heartbeat_hours_to_show / 24) | int), child_recent_incidents) %}
+        <p>Number of unexpected events in the last {{ days }} days.</p>
+        {%- set incident_calendar_count_events = incident_calendar_count((days), child_recent_incidents) %}
         <ul class="tna-incident-calendar">
           {%- for day in incident_calendar_count_events.calendar %}
           <li class="tna-incident-calendar__item{% if day.count == incident_calendar_count_events.max_incidents %} tna-incident-calendar__item--maximum{% endif %}" data-date="{{ day.short_date }}" data-label="{{ day.count or '' }}" data-percentage="{{ (day.count / incident_calendar_count_events.max_incidents) * 100 }}" title="{{ day.pretty_date }}: {{ day.count }} incidents"{% if day.count %} tabindex="0"{% endif %}>{{ day.pretty_date }}: {{ day.count }} incidents</li>
           {%- endfor %}
         </ul>
       {% endcall %}
-      {%- endif %}
-
+      
       {{ incidents_table(child_recent_incidents, child.name) }}
       {%- else %}
-      <p>No incidents in the last {{ (heartbeat_hours_to_show / 24) | int }} days.</p>
+      <p><strong>No incidents in the last {{ days }} days.</strong></p>
       {%- endif %}
     {%- endfor %}
     {%- endif %}

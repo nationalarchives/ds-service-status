@@ -57,7 +57,7 @@ def index():
 
 @bp.route("/<string:monitor_slug>/")
 @cache.cached(key_prefix=cache_key_prefix)
-def details(monitor_slug, hours=None):  # noqa: C901
+def details(monitor_slug, hours=None, link_to_90d=True):  # noqa: C901
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
 
     if jwt := current_app.config.get("UPTIME_KUMA_JWT"):
@@ -119,6 +119,11 @@ def details(monitor_slug, hours=None):  # noqa: C901
                     heartbeat_hours_to_show=hours
                     or current_app.config.get("DETAILED_SERVICE_REPORT_HOURS"),
                     average_ping=average_ping,
+                    link_to_90d=(
+                        url_for("status.details_90d", monitor_slug=monitor_slug)
+                        if link_to_90d
+                        else None
+                    ),
                 )
         except Exception as e:
             current_app.logger.error(
@@ -132,7 +137,7 @@ def details(monitor_slug, hours=None):  # noqa: C901
     return redirect(url_for("status.index"))
 
 
-# @bp.route("/<string:monitor_slug>/90d/")
-# @cache.cached(key_prefix=cache_key_prefix)
-# def details_90d(monitor_slug):
-#     return details(monitor_slug, hours=90 * 24)
+@bp.route("/<string:monitor_slug>/90d/")
+@cache.cached(key_prefix=cache_key_prefix)
+def details_90d(monitor_slug):
+    return details(monitor_slug, hours=90 * 24, link_to_90d=False)

@@ -50,7 +50,7 @@ def pretty_uptime_kuma_status(s):
     return {"title": "Unknown", "accent_colour": "", "fontawesome_icon": "fa-question"}
 
 
-def previous_incidents(heartbeats):
+def previous_incidents(heartbeats, valid_earliest_heartbeat_start=False):
     if not heartbeats or not any(
         heartbeat.get("status") == MonitorStatus(0)
         or heartbeat.get("status") == MonitorStatus(3)
@@ -74,7 +74,8 @@ def previous_incidents(heartbeats):
             or heartbeat.get("status") == MonitorStatus(3)
         ):
             start = heartbeat
-            # has_start = True
+            if valid_earliest_heartbeat_start:
+                has_start = True
         if end:
             if heartbeat.get("status") != MonitorStatus(0) and heartbeat.get(
                 "status"

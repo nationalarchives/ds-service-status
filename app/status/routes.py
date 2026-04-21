@@ -1,6 +1,5 @@
 import os
 
-from app.lib.api import JSONAPIClient
 from app.lib.cache import cache, cache_key_prefix
 from app.lib.uptime_kuma_api.api import UptimeKumaApi
 from app.lib.uptime_kuma_api.monitor_type import MonitorType
@@ -8,6 +7,7 @@ from app.status import bp
 from config import DEFAULT_STATUS_PAGE_CACHE_DURATION
 from flask import current_app, make_response, redirect, render_template, url_for
 from flask_caching import CachedResponse
+from tna_utilities.api import SimpleJsonApiClient
 from tna_utilities.string import slugify
 
 
@@ -37,7 +37,7 @@ def get_settings():
 def index():
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
 
-    client = JSONAPIClient(f"{uptime_kuma_url}/api")
+    client = SimpleJsonApiClient(f"{uptime_kuma_url}/api")
     try:
         data = client.get(f"status-page/{uptime_kuma_status_page_slug}")
         heartbeats = client.get(f"status-page/heartbeat/{uptime_kuma_status_page_slug}")

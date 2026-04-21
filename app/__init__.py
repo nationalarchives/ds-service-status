@@ -1,4 +1,5 @@
 import logging
+import os
 
 import sentry_sdk
 from app.lib.cache import cache
@@ -52,7 +53,9 @@ def create_app(config_class):
 
     gunicorn_error_logger = logging.getLogger("gunicorn.error")
     app.logger.handlers.extend(gunicorn_error_logger.handlers)
-    app.logger.setLevel(gunicorn_error_logger.level or "DEBUG")
+    app.logger.setLevel(
+        gunicorn_error_logger.level or os.getenv("LOG_LEVEL", "warning").upper()
+    )
 
     cache.init_app(
         app,
@@ -65,48 +68,16 @@ def create_app(config_class):
         },
     )
 
-    csp_self = "'self'"
-    csp_none = "'none'"
-    default_csp = csp_self
-    csp_rules = {
-        key.replace("_", "-"): value
-        for key, value in app.config.get_namespace(
-            "CSP_", lowercase=True, trim_namespace=True
-        ).items()
-        if not key.startswith("feature_") and value not in [None, [default_csp]]
-    }
     talisman.init_app(
         app,
-        content_security_policy={
-            "default-src": default_csp,
-            "base-uri": csp_none,
-            "object-src": csp_none,
-        }
-        | csp_rules,
-        feature_policy={
-            "fullscreen": app.config.get("CSP_FEATURE_FULLSCREEN", csp_self),
-            "picture-in-picture": app.config.get(
-                "CSP_FEATURE_PICTURE_IN_PICTURE", csp_self
-            ),
-        },
+        content_security_policy=app.config["CONTENT_SECURITY_POLICY"],
+        allow_google_content_security_policy=True,
         force_https=app.config["FORCE_HTTPS"],
     )
 
-    @app.after_request
-    def apply_extra_headers(response):
-        if "X-Permitted-Cross-Domain-Policies" not in response.headers:
-            response.headers["X-Permitted-Cross-Domain-Policies"] = "none"
-        if "Cross-Origin-Embedder-Policy" not in response.headers:
-            response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
-        if "Cross-Origin-Opener-Policy" not in response.headers:
-            response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
-        if "Cross-Origin-Resource-Policy" not in response.headers:
-            response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
-        return response
-
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
-    app.jinja_loader = ChoiceLoader(
+    app.jinja_env.loader = ChoiceLoader(
         [
             PackageLoader("app"),
             PackageLoader("tna_frontend_jinja"),
@@ -159,8 +130,8 @@ def create_app(config_class):
     from .main import bp as site_bp
     from .status import bp as status_bp
 
-    app.register_blueprint(site_bp)
     app.register_blueprint(healthcheck_bp, url_prefix="/healthcheck")
+    app.register_blueprint(site_bp)
     app.register_blueprint(status_bp, url_prefix="/status")
 
     return app

@@ -2,9 +2,10 @@ import datetime
 import json
 from urllib.parse import unquote
 
-from app.lib.uptime_kuma_api.monitor_status import MonitorStatus
 from flask import request
 from tna_utilities.datetime import pretty_date, pretty_datetime
+
+from app.lib.uptime_kuma_api.monitor_status import MonitorStatus
 
 
 def now_iso_8601():

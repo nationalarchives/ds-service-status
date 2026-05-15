@@ -716,7 +716,7 @@ class UptimeKumaApi(object):
                 headers=self.headers,
             )
         except:  # noqa: E722
-            raise UptimeKumaException("unable to connect")
+            raise UptimeKumaException("unable to connect")  # noqa: B904
 
     def disconnect(self) -> None:
         """
@@ -792,7 +792,7 @@ class UptimeKumaApi(object):
         # DNS
         dns_resolve_server: str = "1.1.1.1",
         dns_resolve_type: str = "A",
-        conditions: list = [],
+        conditions: list = None,
         # MQTT
         mqttUsername: str = "",
         mqttPassword: str = "",
@@ -844,6 +844,9 @@ class UptimeKumaApi(object):
 
         if notificationIDList is None:
             notificationIDList = []
+
+        if conditions is None:
+            conditions = []
 
         data = {
             "type": type,
@@ -2125,7 +2128,7 @@ class UptimeKumaApi(object):
                 verify=self.ssl_verify,
             ).json()
         except requests.exceptions.Timeout as e:
-            raise Timeout(e)
+            raise Timeout(e) from e
 
         config = r1["config"]
         config.update(r2["config"])

@@ -2,6 +2,12 @@ import logging
 import os
 
 import sentry_sdk
+from flask import Flask
+from jinja2 import ChoiceLoader, PackageLoader
+from tna_utilities.datetime import pretty_date, pretty_datetime
+from tna_utilities.datetime import seconds_to_duration as seconds_to_duration_raw
+from tna_utilities.string import slugify
+
 from app.lib.cache import cache
 from app.lib.context_processor import (
     cookie_preference,
@@ -26,11 +32,6 @@ from app.lib.template_filters import (
     total_incident_time,
     total_maintenance_time,
 )
-from flask import Flask
-from jinja2 import ChoiceLoader, PackageLoader
-from tna_utilities.datetime import pretty_date, pretty_datetime
-from tna_utilities.datetime import seconds_to_duration as seconds_to_duration_raw
-from tna_utilities.string import slugify
 
 
 def create_app(config_class):

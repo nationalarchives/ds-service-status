@@ -1,13 +1,4 @@
-import {
-  initAll,
-  // Cookies,
-} from "@nationalarchives/frontend/nationalarchives/all.mjs";
-
-// const cookiesDomain =
-//   document.documentElement.getAttribute("data-cookiesdomain");
-// if (cookiesDomain) {
-//   new Cookies({ domain: cookiesDomain });
-// }
+import { initAll } from "@nationalarchives/frontend/nationalarchives/all.mjs";
 
 initAll();
 
@@ -67,6 +58,7 @@ const $refreshTime = document.querySelector(
   "meta[name='tna.page.refresh_time']",
 );
 
+/* eslint-disable-next-line max-statements */
 const updateRefreshTimer = (refreshTime) => {
   const $ariaLiveEl = document.getElementById("aria-live-refresh");
   const secondsDifference = Math.round(
@@ -104,8 +96,9 @@ if ($refreshTimer && $refreshTime) {
       if (generatedTime) {
         const refreshTime = new Date(
           generatedTime.getTime() +
-            parseInt($refreshTime.getAttribute("content")) * 1000,
+            parseInt($refreshTime.getAttribute("content"), 10) * 1000,
         );
+        /* eslint-disable-next-line max-depth */
         if (refreshTime) {
           const $ariaLiveEl = document.createElement("p");
           $ariaLiveEl.id = "aria-live-refresh";

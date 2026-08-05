@@ -31,6 +31,7 @@ $refresh-banner-height: 2.5rem;
   z-index: 4;
 
   line-height: $refresh-banner-height;
+
   pointer-events: none;
 
   &__content {
@@ -40,6 +41,7 @@ $refresh-banner-height: 2.5rem;
 
     position: sticky;
     top: 0;
+
     pointer-events: all;
 
     p {
@@ -204,9 +206,10 @@ $refresh-banner-height: 2.5rem;
   &__content {
     @include colour.accent-light;
 
+    padding: spacing.space(0.75) spacing.space(1);
+
     flex: 1;
 
-    padding: spacing.space(0.75) spacing.space(1);
     border-left: none;
 
     border-radius: 0 borderVars.$rounded-border-radius
@@ -320,11 +323,12 @@ $refresh-banner-height: 2.5rem;
     height: 2rem;
     margin: 0;
 
+    flex: 1;
+
     position: relative;
     z-index: 1;
 
     font-size: 0;
-    flex: 1;
 
     &--status-down {
       @include colour.pink-accent;
@@ -394,21 +398,22 @@ $refresh-banner-height: 2.5rem;
   box-sizing: border-box;
 
   list-style: none;
+
   flex-flow: row nowrap;
   @include colour.colour-border("keyline-dark", 1px, solid, bottom);
 
   &__item {
     height: attr(data-percentage %);
 
+    flex: 1;
+
     position: relative;
 
     font-size: 0;
 
-    flex: 1;
+    border-radius: 0.1px;
 
     @include colour.accent;
-
-    border-radius: 0.1px;
 
     &:not([data-label=""]) {
       cursor: pointer;

@@ -83,6 +83,5 @@
 
 {% block bodyEnd %}
     <script src="{{ url_for('static', filename='main.min.js', v=app_config.BUILD_VERSION) }}" defer></script>
-    <script src="{{ url_for('static', filename='analytics.min.js', v=app_config.BUILD_VERSION) }}" defer></script>
     <script type="module" src="https://www.nationalarchives.gov.uk/enrichment/js/logo-adornments.js?date={{ now_iso_8601_date() }}"></script>
 {% endblock bodyEnd %}

@@ -98,11 +98,11 @@ def previous_incidents(heartbeats, valid_earliest_heartbeat_start=False):
                     "duration_seconds": int(
                         (
                             (
-                                datetime.fromisoformat(end.get("time"))
+                                get_date_from_string(end.get("time")).astimezone(UTC)
                                 if has_end
                                 else datetime.now(UTC)
                             )
-                            - datetime.fromisoformat(start.get("time"))
+                            - get_date_from_string(start.get("time")).astimezone(UTC)
                         ).total_seconds()
                     ),
                     "status": pretty_uptime_kuma_status(

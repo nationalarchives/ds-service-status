@@ -16,14 +16,14 @@ def get_settings():
     uptime_kuma_url = current_app.config.get("UPTIME_KUMA_URL").strip("/")
     if not uptime_kuma_url:
         current_app.logger.critical("UPTIME_KUMA_URL not set")
-        raise Exception("UPTIME_KUMA_URL not set")
+        raise ValueError("UPTIME_KUMA_URL not set")
 
     uptime_kuma_status_page_slug = current_app.config.get(
         "UPTIME_KUMA_STATUS_PAGE_SLUG"
     )
     if not uptime_kuma_status_page_slug:
         current_app.logger.critical("UPTIME_KUMA_STATUS_PAGE_SLUG not set")
-        raise Exception("UPTIME_KUMA_STATUS_PAGE_SLUG not set")
+        raise ValueError("UPTIME_KUMA_STATUS_PAGE_SLUG not set")
 
     return uptime_kuma_url, uptime_kuma_status_page_slug
 
@@ -42,7 +42,7 @@ def index():
     try:
         data = client.get(f"status-page/{uptime_kuma_status_page_slug}")
         heartbeats = client.get(f"status-page/heartbeat/{uptime_kuma_status_page_slug}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         current_app.logger.error(f"Failed to render status page: {e}")
         return CachedResponse(
             response=make_response(render_template("errors/api.html"), 502),
@@ -58,7 +58,7 @@ def index():
 
 @bp.route("/<string:monitor_slug>/")
 @cache.cached(key_prefix=cache_key_prefix)
-def details(monitor_slug, hours=None, link_to_90d=True):  # noqa: C901
+def details(monitor_slug, hours=None, link_to_90d=True):
     uptime_kuma_url, uptime_kuma_status_page_slug = get_settings()
 
     if jwt := current_app.config.get("UPTIME_KUMA_JWT"):
@@ -126,7 +126,7 @@ def details(monitor_slug, hours=None, link_to_90d=True):  # noqa: C901
                         else None
                     ),
                 )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             current_app.logger.error(
                 f"Failed to render detailed status page for '{monitor_slug}': {e}"
             )

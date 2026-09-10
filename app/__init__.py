@@ -106,15 +106,15 @@ def create_app(config_class):
 
     @app.context_processor
     def context_processor():
-        return dict(
-            cookie_preference=cookie_preference,
-            now_iso_8601=now_iso_8601,
-            now_iso_8601_date=now_iso_8601_date,
-            now_pretty=now_pretty,
-            incident_calendar_heartbeats=incident_calendar_heartbeats,
-            incident_calendar_count=incident_calendar_count,
-            incident_calendar_duration=incident_calendar_duration,
-            app_config={
+        return {
+            "cookie_preference": cookie_preference,
+            "now_iso_8601": now_iso_8601,
+            "now_iso_8601_date": now_iso_8601_date,
+            "now_pretty": now_pretty,
+            "incident_calendar_heartbeats": incident_calendar_heartbeats,
+            "incident_calendar_count": incident_calendar_count,
+            "incident_calendar_duration": incident_calendar_duration,
+            "app_config": {
                 "ENVIRONMENT_NAME": app.config.get("ENVIRONMENT_NAME"),
                 "CONTAINER_IMAGE": app.config.get("CONTAINER_IMAGE"),
                 "BUILD_VERSION": app.config.get("BUILD_VERSION"),
@@ -124,8 +124,8 @@ def create_app(config_class):
                     "STATUS_PAGE_REFRESH_SECONDS"
                 ),
             },
-            feature={},
-        )
+            "feature": {},
+        }
 
     from .healthcheck import bp as healthcheck_bp
     from .main import bp as site_bp

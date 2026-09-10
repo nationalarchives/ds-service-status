@@ -1,7 +1,8 @@
 import json
 import os
+from typing import ClassVar
 
-from app.lib.util import strtobool
+from tna_utilities import strtobool
 
 DEFAULT_STATUS_PAGE_CACHE_DURATION = 15
 
@@ -42,7 +43,7 @@ class Production(Features):
     CSP_REPORT_URI: str = os.environ.get("CSP_REPORT_URI", "")
     if CSP_REPORT_URI and BUILD_VERSION:
         CSP_REPORT_URI += f"&sentry_release={BUILD_VERSION}" if BUILD_VERSION else ""
-    CONTENT_SECURITY_POLICY: dict = {
+    CONTENT_SECURITY_POLICY: ClassVar[dict] = {
         "connect-src": os.environ.get("CSP_CONNECT_SRC", "").split(","),
         "font-src": os.environ.get("CSP_FONT_SRC", "").split(","),
         "frame-src": os.environ.get("CSP_FRAME_SRC", "").split(","),

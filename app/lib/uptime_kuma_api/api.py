@@ -167,7 +167,7 @@ def _build_notification_data(
     for keys in notification_provider_options.values():
         allowed_kwargs.extend(keys)
 
-    for key in kwargs.keys():
+    for key in kwargs:
         if key not in allowed_kwargs:
             raise TypeError(f"unknown argument '{key}'")
 
@@ -424,7 +424,7 @@ def _check_arguments_tag(kwargs) -> None:
     _check_missing_arguments(required_args, kwargs)
 
 
-class UptimeKumaApi(object):
+class UptimeKumaApi:
     """This class is used to communicate with Uptime Kuma.
 
     Example::
@@ -555,7 +555,7 @@ class UptimeKumaApi(object):
 
         try:
             yield
-        except:  # noqa: E722
+        except:
             raise
         else:
             timestamp = time.time()

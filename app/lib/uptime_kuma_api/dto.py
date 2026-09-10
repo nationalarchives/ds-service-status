@@ -1,6 +1,5 @@
 # Create DTO Object for easier monitor creation
 
-from typing import Optional
 
 from .auth_method import AuthMethod
 from .monitor_type import MonitorType
@@ -21,11 +20,11 @@ class MonitorBuilder:
         self._data["name"] = value
         return self
 
-    def with_parent(self, value: Optional[int]) -> "MonitorBuilder":
+    def with_parent(self, value: int | None) -> "MonitorBuilder":
         self._data["parent"] = value
         return self
 
-    def with_description(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_description(self, value: str | None) -> "MonitorBuilder":
         self._data["description"] = value
         return self
 
@@ -49,7 +48,7 @@ class MonitorBuilder:
         self._data["upsideDown"] = value
         return self
 
-    def with_notification_id_list(self, value: Optional[list]) -> "MonitorBuilder":
+    def with_notification_id_list(self, value: list | None) -> "MonitorBuilder":
         self._data["notificationIDList"] = value
         return self
 
@@ -58,7 +57,7 @@ class MonitorBuilder:
         return self
 
     # HTTP, KEYWORD, JSON_QUERY, REAL_BROWSER
-    def with_url(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_url(self, value: str | None) -> "MonitorBuilder":
         self._data["url"] = value
         return self
 
@@ -67,7 +66,7 @@ class MonitorBuilder:
         self._data["maxredirects"] = value
         return self
 
-    def with_accepted_statuscodes(self, value: Optional[list[str]]) -> "MonitorBuilder":
+    def with_accepted_statuscodes(self, value: list[str] | None) -> "MonitorBuilder":
         self._data["accepted_statuscodes"] = value
         return self
 
@@ -80,7 +79,7 @@ class MonitorBuilder:
         self._data["ignoreTls"] = value
         return self
 
-    def with_proxy_id(self, value: Optional[int]) -> "MonitorBuilder":
+    def with_proxy_id(self, value: int | None) -> "MonitorBuilder":
         self._data["proxyId"] = value
         return self
 
@@ -88,11 +87,11 @@ class MonitorBuilder:
         self._data["method"] = value
         return self
 
-    def with_body(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_body(self, value: str | None) -> "MonitorBuilder":
         self._data["body"] = value
         return self
 
-    def with_headers(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_headers(self, value: str | None) -> "MonitorBuilder":
         self._data["headers"] = value
         return self
 
@@ -100,31 +99,31 @@ class MonitorBuilder:
         self._data["authMethod"] = value
         return self
 
-    def with_tls_cert(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_tls_cert(self, value: str | None) -> "MonitorBuilder":
         self._data["tlsCert"] = value
         return self
 
-    def with_tls_key(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_tls_key(self, value: str | None) -> "MonitorBuilder":
         self._data["tlsKey"] = value
         return self
 
-    def with_tls_ca(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_tls_ca(self, value: str | None) -> "MonitorBuilder":
         self._data["tlsCa"] = value
         return self
 
-    def with_basic_auth_user(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_basic_auth_user(self, value: str | None) -> "MonitorBuilder":
         self._data["basic_auth_user"] = value
         return self
 
-    def with_basic_auth_pass(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_basic_auth_pass(self, value: str | None) -> "MonitorBuilder":
         self._data["basic_auth_pass"] = value
         return self
 
-    def with_auth_domain(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_auth_domain(self, value: str | None) -> "MonitorBuilder":
         self._data["authDomain"] = value
         return self
 
-    def with_auth_workstation(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_auth_workstation(self, value: str | None) -> "MonitorBuilder":
         self._data["authWorkstation"] = value
         return self
 
@@ -134,19 +133,19 @@ class MonitorBuilder:
         self._data["oauth_auth_method"] = value
         return self
 
-    def with_oauth_token_url(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_oauth_token_url(self, value: str | None) -> "MonitorBuilder":
         self._data["oauth_token_url"] = value
         return self
 
-    def with_oauth_client_id(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_oauth_client_id(self, value: str | None) -> "MonitorBuilder":
         self._data["oauth_client_id"] = value
         return self
 
-    def with_oauth_client_secret(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_oauth_client_secret(self, value: str | None) -> "MonitorBuilder":
         self._data["oauth_client_secret"] = value
         return self
 
-    def with_oauth_scopes(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_oauth_scopes(self, value: str | None) -> "MonitorBuilder":
         self._data["oauth_scopes"] = value
         return self
 
@@ -155,7 +154,7 @@ class MonitorBuilder:
         return self
 
     # KEYWORD
-    def with_keyword(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_keyword(self, value: str | None) -> "MonitorBuilder":
         self._data["keyword"] = value
         return self
 
@@ -164,7 +163,7 @@ class MonitorBuilder:
         return self
 
     # GRPC_KEYWORD
-    def with_grpc_url(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_grpc_url(self, value: str | None) -> "MonitorBuilder":
         self._data["grpcUrl"] = value
         return self
 
@@ -172,28 +171,28 @@ class MonitorBuilder:
         self._data["grpcEnableTls"] = value
         return self
 
-    def with_grpc_service_name(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_grpc_service_name(self, value: str | None) -> "MonitorBuilder":
         self._data["grpcServiceName"] = value
         return self
 
-    def with_grpc_method(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_grpc_method(self, value: str | None) -> "MonitorBuilder":
         self._data["grpcMethod"] = value
         return self
 
-    def with_grpc_protobuf(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_grpc_protobuf(self, value: str | None) -> "MonitorBuilder":
         self._data["grpcProtobuf"] = value
         return self
 
-    def with_grpc_body(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_grpc_body(self, value: str | None) -> "MonitorBuilder":
         self._data["grpcBody"] = value
         return self
 
-    def with_grpc_metadata(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_grpc_metadata(self, value: str | None) -> "MonitorBuilder":
         self._data["grpcMetadata"] = value
         return self
 
     # PORT, PING, DNS, STEAM, MQTT, RADIUS, TAILSCALE_PING
-    def with_hostname(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_hostname(self, value: str | None) -> "MonitorBuilder":
         self._data["hostname"] = value
         return self
 
@@ -203,7 +202,7 @@ class MonitorBuilder:
         return self
 
     # PORT, DNS, STEAM, MQTT, RADIUS
-    def with_port(self, value: Optional[int]) -> "MonitorBuilder":
+    def with_port(self, value: int | None) -> "MonitorBuilder":
         self._data["port"] = value
         return self
 
@@ -234,12 +233,12 @@ class MonitorBuilder:
         return self
 
     # SQLSERVER, POSTGRES, MYSQL, MONGODB, REDIS
-    def with_database_connection_string(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_database_connection_string(self, value: str | None) -> "MonitorBuilder":
         self._data["databaseConnectionString"] = value
         return self
 
     # SQLSERVER, POSTGRES, MYSQL
-    def with_database_query(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_database_query(self, value: str | None) -> "MonitorBuilder":
         self._data["databaseQuery"] = value
         return self
 
@@ -248,33 +247,33 @@ class MonitorBuilder:
         self._data["docker_container"] = value
         return self
 
-    def with_docker_host(self, value: Optional[int]) -> "MonitorBuilder":
+    def with_docker_host(self, value: int | None) -> "MonitorBuilder":
         self._data["docker_host"] = value
         return self
 
     # RADIUS
-    def with_radius_username(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_radius_username(self, value: str | None) -> "MonitorBuilder":
         self._data["radiusUsername"] = value
         return self
 
-    def with_radius_password(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_radius_password(self, value: str | None) -> "MonitorBuilder":
         self._data["radiusPassword"] = value
         return self
 
-    def with_radius_secret(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_radius_secret(self, value: str | None) -> "MonitorBuilder":
         self._data["radiusSecret"] = value
         return self
 
-    def with_radius_called_station_id(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_radius_called_station_id(self, value: str | None) -> "MonitorBuilder":
         self._data["radiusCalledStationId"] = value
         return self
 
-    def with_radius_calling_station_id(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_radius_calling_station_id(self, value: str | None) -> "MonitorBuilder":
         self._data["radiusCallingStationId"] = value
         return self
 
     # GAMEDIG
-    def with_game(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_game(self, value: str | None) -> "MonitorBuilder":
         self._data["game"] = value
         return self
 
@@ -283,26 +282,26 @@ class MonitorBuilder:
         return self
 
     # JSON_QUERY
-    def with_json_path(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_json_path(self, value: str | None) -> "MonitorBuilder":
         self._data["jsonPath"] = value
         return self
 
-    def with_expected_value(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_expected_value(self, value: str | None) -> "MonitorBuilder":
         self._data["expectedValue"] = value
         return self
 
     # KAFKA_PRODUCER
     def with_kafka_producer_brokers(
-        self, value: Optional[list[str]]
+        self, value: list[str] | None
     ) -> "MonitorBuilder":
         self._data["kafkaProducerBrokers"] = value
         return self
 
-    def with_kafka_producer_topic(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_kafka_producer_topic(self, value: str | None) -> "MonitorBuilder":
         self._data["kafkaProducerTopic"] = value
         return self
 
-    def with_kafka_producer_message(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_kafka_producer_message(self, value: str | None) -> "MonitorBuilder":
         self._data["kafkaProducerMessage"] = value
         return self
 
@@ -317,7 +316,7 @@ class MonitorBuilder:
         return self
 
     def with_kafka_producer_sasl_options(
-        self, value: Optional[dict]
+        self, value: dict | None
     ) -> "MonitorBuilder":
         self._data["kafkaProducerSaslOptions"] = value
         return self
@@ -343,11 +342,11 @@ class MonitorBuilder:
         self._data["snmpVersion"] = value
         return self
 
-    def with_rabbitmq_nodes(self, value: Optional[list]) -> "MonitorBuilder":
+    def with_rabbitmq_nodes(self, value: list | None) -> "MonitorBuilder":
         self._data["rabbitmqNodes"] = value
         return self
 
-    def with_conditions(self, value: Optional[list]) -> "MonitorBuilder":
+    def with_conditions(self, value: list | None) -> "MonitorBuilder":
         self._data["conditions"] = value
         return self
 
@@ -367,15 +366,15 @@ class MonitorBuilder:
         self._data["ping_per_request_timeout"] = value
         return self
 
-    def with_mqtt_websocket_path(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_mqtt_websocket_path(self, value: str | None) -> "MonitorBuilder":
         self._data["mqttWebsocketPath"] = value
         return self
 
-    def with_rabbitmq_username(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_rabbitmq_username(self, value: str | None) -> "MonitorBuilder":
         self._data["rabbitmqUsername"] = value
         return self
 
-    def with_rabbitmq_password(self, value: Optional[str]) -> "MonitorBuilder":
+    def with_rabbitmq_password(self, value: str | None) -> "MonitorBuilder":
         self._data["rabbitmqPassword"] = value
         return self
 

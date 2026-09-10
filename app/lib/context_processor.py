@@ -1,27 +1,27 @@
-import datetime
 import json
+from datetime import UTC, datetime, timedelta
 from urllib.parse import unquote
 
 from flask import request
-from tna_utilities.datetime import pretty_date, pretty_datetime
+from tna_utilities.datetime import get_date_from_string, pretty_date, pretty_datetime
 
 from app.lib.uptime_kuma_api.monitor_status import MonitorStatus
 
 
 def now_iso_8601():
-    now = datetime.datetime.now()
+    now = datetime.now(UTC)
     now_date = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     return now_date
 
 
 def now_iso_8601_date():
-    now = datetime.datetime.now()
+    now = datetime.now(UTC)
     now_date = now.strftime("%Y-%m-%d")
     return now_date
 
 
 def now_pretty():
-    now = datetime.datetime.now()
+    now = datetime.now(UTC)
     now_date = pretty_datetime(now)
     return now_date
 
@@ -30,14 +30,14 @@ def cookie_preference(policy):
     if "cookie_preferences" in request.cookies:
         cookie_preferences = request.cookies["cookie_preferences"]
         preferences = json.loads(unquote(cookie_preferences))
-        return preferences[policy] if policy in preferences else None
+        return preferences.get(policy, None)
     return None
 
 
 def incident_calendar_count(days, incidents):
     calendar = []
     for i in range(days + 1):
-        day = datetime.datetime.now() + datetime.timedelta(days=-i)
+        day = datetime.now(UTC) + timedelta(days=-i)
         calendar.append(
             {
                 "date": day.date().isoformat(),
@@ -50,18 +50,14 @@ def incident_calendar_count(days, incidents):
                         if incident.get("start")
                         and incident["start"].get("status", None) != MonitorStatus(3)
                         and incident["start"].get("time")
-                        and datetime.datetime.fromisoformat(
-                            incident["start"]["time"]
-                        ).date()
+                        and get_date_from_string(incident["start"]["time"]).date()
                         == day.date()
                     ]
                 ),
             }
         )
     calendar.sort(key=lambda x: x["date"], reverse=False)
-    start_day_offset = (
-        datetime.datetime.now() + datetime.timedelta(days=-days)
-    ).weekday()
+    start_day_offset = (datetime.now(UTC) + timedelta(days=-days)).weekday()
     max_indicents = max(item["count"] for item in calendar) if calendar else 0
     return {
         "calendar": calendar,
@@ -73,22 +69,19 @@ def incident_calendar_count(days, incidents):
 def incident_calendar_heartbeats(incidents, days):
     calendar = []
     for i in range(days + 1):
-        day = datetime.datetime.now() + datetime.timedelta(days=-i)
+        day = datetime.now(UTC) + timedelta(days=-i)
         day_incidents = [
             incident
             for incident in incidents
             if (
                 incident.get("start")
                 and incident["start"].get("time")
-                and datetime.datetime.fromisoformat(incident["start"]["time"])
-                .replace(hour=0, minute=0, second=0, microsecond=0)
-                .date()
-                == day.date()
+                and get_date_from_string(incident["start"]["time"]).date() == day.date()
             )
             or (
                 incident.get("end")
                 and incident["end"].get("time")
-                and datetime.datetime.fromisoformat(incident["end"]["time"])
+                and get_date_from_string(incident["end"]["time"])
                 .replace(hour=23, minute=59, second=59, microsecond=999999)
                 .date()
                 == day.date()
@@ -98,11 +91,11 @@ def incident_calendar_heartbeats(incidents, days):
                 and incident.get("end")
                 and incident["start"].get("time")
                 and incident["end"].get("time")
-                and datetime.datetime.fromisoformat(incident["start"]["time"])
+                and datetime.fromisoformat(incident["start"]["time"])
                 .replace(hour=0, minute=0, second=0, microsecond=0)
                 .date()
                 < day.date()
-                and datetime.datetime.fromisoformat(incident["end"]["time"])
+                and datetime.fromisoformat(incident["end"]["time"])
                 .replace(hour=23, minute=59, second=59, microsecond=999999)
                 .date()
                 > day.date()
@@ -117,21 +110,16 @@ def incident_calendar_heartbeats(incidents, days):
                 "status": (
                     MonitorStatus(0)
                     if any(
-                        [
-                            incident
-                            for incident in day_incidents
-                            if incident["start"].get("status", None) == MonitorStatus(0)
-                        ]
+                        incident
+                        for incident in day_incidents
+                        if incident["start"].get("status", None) == MonitorStatus(0)
                     )
                     else (
                         MonitorStatus(3)
                         if any(
-                            [
-                                incident
-                                for incident in day_incidents
-                                if incident["start"].get("status", None)
-                                == MonitorStatus(3)
-                            ]
+                            incident
+                            for incident in day_incidents
+                            if incident["start"].get("status", None) == MonitorStatus(3)
                         )
                         else (
                             MonitorStatus(2) if len(day_incidents) else MonitorStatus(1)
@@ -147,7 +135,7 @@ def incident_calendar_heartbeats(incidents, days):
 def incident_calendar_duration(days, incidents):
     calendar = []
     for i in range(days + 1):
-        day = datetime.datetime.now() + datetime.timedelta(days=-i)
+        day = datetime.now(UTC) + timedelta(days=-i)
         calendar.append(
             {
                 "date": day.date().isoformat(),
@@ -160,18 +148,14 @@ def incident_calendar_duration(days, incidents):
                         if incident.get("start")
                         and incident["start"].get("status", None) != MonitorStatus(3)
                         and incident["start"].get("time")
-                        and datetime.datetime.fromisoformat(
-                            incident["start"]["time"]
-                        ).date()
+                        and datetime.fromisoformat(incident["start"]["time"]).date()
                         == day.date()
                     ]
                 ),
             }
         )
     calendar.sort(key=lambda x: x["date"], reverse=False)
-    start_day_offset = (
-        datetime.datetime.now() + datetime.timedelta(days=-days)
-    ).weekday()
+    start_day_offset = (datetime.now(UTC) + timedelta(days=-days)).weekday()
     max_duration = max(item["duration"] for item in calendar) if calendar else 0
     return {
         "calendar": calendar,

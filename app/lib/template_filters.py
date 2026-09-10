@@ -1,5 +1,5 @@
-import datetime
 import math
+from datetime import UTC, datetime
 
 from markdown_it import MarkdownIt
 from tna_utilities.datetime import get_date_from_string, pretty_age
@@ -98,11 +98,11 @@ def previous_incidents(heartbeats, valid_earliest_heartbeat_start=False):
                     "duration_seconds": int(
                         (
                             (
-                                datetime.datetime.fromisoformat(end.get("time"))
+                                get_date_from_string(end.get("time")).astimezone(UTC)
                                 if has_end
-                                else datetime.datetime.now()
+                                else datetime.now(UTC)
                             )
-                            - datetime.datetime.fromisoformat(start.get("time"))
+                            - get_date_from_string(start.get("time")).astimezone(UTC)
                         ).total_seconds()
                     ),
                     "status": pretty_uptime_kuma_status(
